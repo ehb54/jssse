@@ -50,36 +50,31 @@ $( function() {
 
   } );
   var jspdb = {
-    id: "asdf",
-    options: {
-      color: "red"
-    },
     create: function(id, options){
-      this.id = id;
-      this.options = options;
-      return this;
+      var newObj={};
+      newObj.id = id;
+      newObj.options = options;
+      return newObj;
+    },
+    listen: function(elt_id){
+      var wid = document.getElementById(elt_id);
+      wid.addEventListener("click", function(){
+        console.log("element id: "+elt_id);
+      });
     }
   };
-
+//create objects (debugging purposes - can view obj1, obj2 properties in console)
   var obj1 = jspdb.create("Sarah",{color:"blue"});
-
-
   var obj2 = jspdb.create("Robert",{color:"green"});
+
+/*  make sure DOM is properly loaded before manipulating (changing div into
+ *  dialog, adding eventlisteners)
+*/
 window.onload=function(){
-
-
-
-  var div = document.getElementById("test1");
-  //div.id=obj1.id;
-  div.addEventListener("click", function(){
-    console.log("id: "+div.id);
-  });
-  // div.id = obj1.id;
-  // div.style.background = obj1.options.color;
-  //
-  // jspdb.create("Robert",{color:"green"});
-  // var obj2 = jspdb;
-  // var div2= document.createElement("div2");
-  // div2.id = obj2.id;
-  // div2.style.background = obj2.options.color;
+  //make div a jQuery UI dialog Box
+  $("#test1").dialog().css("background-color","blue");
+  $("#div2").dialog().css("background-color", "red");
+  //add event listeners
+  jspdb.listen("test1");
+  jspdb.listen("div2");
 }
