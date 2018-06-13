@@ -1,8 +1,8 @@
 
 $( function() {
     // the widget definition, where "custom" is the namespace,
-    // "colorize" the widget name
-    $.widget( "custom.colorize", {
+    // "jspdb" the widget name
+    $.widget( "custom.jspdb", {
       // default options
       options: {
         red: 255,
@@ -39,13 +39,47 @@ $( function() {
 
 
     // Initialize with default options
-    $( "#my-widget1" ).colorize().dialog();
+    $( "#my-widget1" ).jspdb().dialog();
 
     // Initialize with two customized options
-    $( "#my-widget2" ).colorize({
+    $( "#my-widget2" ).jspdb({
       red: 60,
       blue: 60
     })
     .dialog();
 
   } );
+  var jspdb = {
+    id: "asdf",
+    options: {
+      color: "red"
+    },
+    create: function(id, options){
+      this.id = id;
+      this.options = options;
+      return this;
+    }
+  };
+
+  var obj1 = jspdb.create("Sarah",{color:"blue"});
+
+
+  var obj2 = jspdb.create("Robert",{color:"green"});
+window.onload=function(){
+
+
+
+  var div = document.getElementById("test1");
+  //div.id=obj1.id;
+  div.addEventListener("click", function(){
+    console.log("id: "+div.id);
+  });
+  // div.id = obj1.id;
+  // div.style.background = obj1.options.color;
+  //
+  // jspdb.create("Robert",{color:"green"});
+  // var obj2 = jspdb;
+  // var div2= document.createElement("div2");
+  // div2.id = obj2.id;
+  // div2.style.background = obj2.options.color;
+}
