@@ -56,25 +56,37 @@ $( function() {
       newObj.options = options;
       return newObj;
     },
-    listen: function(elt_id){
-      var wid = document.getElementById(elt_id);
-      wid.addEventListener("click", function(){
-        console.log("element id: "+elt_id);
-      });
+    //take in object as parameter
+    listen: function(obj){
+      if(typeof(obj)==="object"){
+        var wid;
+        if(obj.id != null && (wid = document.getElementById(obj.id))){
+          wid.addEventListener("click", function(){
+            console.log("element id: "+obj.id);
+          });
+        }
+      }
     }
   };
-//create objects (debugging purposes - can view obj1, obj2 properties in console)
-  var obj1 = jspdb.create("Sarah",{color:"blue"});
-  var obj2 = jspdb.create("Robert",{color:"green"});
+
 
 /*  make sure DOM is properly loaded before manipulating (changing div into
  *  dialog, adding eventlisteners)
 */
 window.onload=function(){
-  //make div a jQuery UI dialog Box
+  //make div a jQuery UI dialog Box (maybe in jspdb object definition?)
   $("#test1").dialog().css("background-color","blue");
   $("#div2").dialog().css("background-color", "red");
+
+  //create objects (debugging purposes - can view obj1, obj2 properties in console)
+    var obj1 = jspdb.create("test1",{readonly:"true"});
+    var obj2 = jspdb.create("div2",{fileformat:"pdb"});
+
+      console.log("obj1: " + JSON.stringify(obj1));
+      console.dir(obj1);
+      console.dir(obj2);
+
   //add event listeners
-  jspdb.listen("test1");
-  jspdb.listen("div2");
+  jspdb.listen(obj1);
+  jspdb.listen(obj2);
 }
