@@ -66,6 +66,18 @@ $( function() {
           });
         }
       }
+    },
+    load: function(obj, data, cb){
+      //1. Parse/match file reference
+      var type = /^([a-zA-z]){4,6}:\/\//;
+      var res = type.exec(data);
+      //check address type (file vs https)
+      if(res.equals("file")){
+        //load file from local machine
+      }
+      else if(res.equals("https")){
+        //retrieve file from pdb database
+      }
     }
   };
 
