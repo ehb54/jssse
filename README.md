@@ -9,5 +9,6 @@ The goal of this project is to develop a javascript based editor of information 
 
 Issues/projects in this repo will be HQ for to do items
 
+* [Milestones](https://github.com/ehb54/jspdb/milestones)
 * Kanban is [here](https://github.com/ehb54/jspdb/projects/1)
 * [Create an issue](https://github.com/ehb54/jspdb/issues/new)
