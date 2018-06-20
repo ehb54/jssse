@@ -48,7 +48,95 @@ $( function() {
     })
     .dialog();
 
+      //initialize variables
+      var highlightBox_x1=0;
+      var highlightBox_x2=0;
+      var multipleSelect = false;
+      var sequenceDiv = document.getElementById('sequence0');
+      var barMarker = document.getElementById('marker');
+      var selectHighlight = document.getElementById('selectLocator');
+      var selectSequence = document.getElementById('main-selector');
+      //console.log(barMarker);
+      sequenceDiv.addEventListener('mousemove', function(e){
+        //console.log('mousein '+e.clientX);
+        barMarker.style.display = 'block';
+        barMarker.style.left = (e.pageX-10)+'px';
+        highlightBox_x2 = barMarker.style.left;
+        //console.log(highlightBox_x2);
+        drawHighlightBox();
+
+      });
+      sequenceDiv.addEventListener('mouseout',function(e){
+        //console.log('mouseout '+e.clientX);
+        barMarker.style.display = 'none';
+      });
+      sequenceDiv.addEventListener('mousedown', function(evt){
+        selectHighlight.style.display = 'inline';
+        highlightBox_x1 = barMarker.style.left;
+        //console.log(highlightBox_x1);
+        drawHighlightBox();
+
+      });
+      sequenceDiv.addEventListener('mouseup', function(evt){
+        selectHighlight.style.display = 'none';
+        highlightBox_x2 = barMarker.style.left;
+        var res = drawHighlightBox();
+        //console.log(res);
+
+        // $(window).keydown(function(e){
+        //     if (e.ctrlKey){
+        //       console.log('Control Down');
+        //     }
+        //
+        // });
+        multipleSelect=false;
+        if(evt.ctrlKey){
+          multipleSelect=true;
+          console.log('ctrl+clickup');
+        }
+        drawSelector(res);
+      });
+
+      function drawHighlightBox(){
+        //console.log(highlightBox_x1);
+        selectHighlight.style.left = highlightBox_x1;
+        var res={};
+        selectHighlight.style.width = parseInt( highlightBox_x2, 10 ) - parseInt( highlightBox_x1, 10 ) + "px";
+        res = {
+          left: selectHighlight.style.left,
+          width: selectHighlight.style.width
+        };
+
+        return res;
+        //console.log(selectHighlight.style.width);
+      }
+      function drawSelector(res){
+
+
+        var newDiv = document.createElement('div');
+        var newDivChild = document.createElement('div');
+
+        newDiv.style.left = res.left;
+        newDiv.style.width = res.width;
+        newDiv.className = "locatorDiv";
+        newDivChild.className = "locator_rect";
+        if(multipleSelect){
+          newDiv.appendChild(newDivChild);
+          document.getElementById('sequence0').appendChild(newDiv);
+        }
+        else{
+          //clear all select rectangles if ctrl+click is not clicked
+          $('.locatorDiv').remove();
+
+          //and then create element
+          newDiv.appendChild(newDivChild);
+          document.getElementById('sequence0').appendChild(newDiv);
+        }
+
+      }
+
   } );
+  
   var jspdb = {
     create: function(id, options){
       var newObj={};
@@ -148,4 +236,9 @@ window.onload=function(){
     if(err){throw err;}
     console.log("success");
   });
+
+
+console.log($('sequence').height());
+
+
 }
