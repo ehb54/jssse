@@ -1,3 +1,13 @@
+.body{
+  /*make text unselectable*/
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
+}
 .custom-colorize {
     font-size: 20px;
     position: relative;
@@ -23,26 +33,51 @@
     -ms-user-select: none;
     user-select: none;
   }
-  #dragger {
+  /* #dragger {
     border: 1px solid #000;
     position: absolute;
     background-color: green;
     opacity: 0.5;
-}
+} */
+.res{
+  position:relative;
+  top:40%;
+  /* margin-top:-9px; */
+  padding-left:5px;
+  padding-right:5px;
+  pointer-events: none;
+  border: 1px solid black;
+  font-family: Consolas, monaco, monospace;
 
+  /*make text unselectable*/
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
+}
 /*new stuff*/
 .sequenceDiv{
   height:75px;
   position:relative;
-  border:1px solid black;
+  border:2px solid black;
 }
 .locatorDiv{
   position:absolute;
-  top:14px;
+  top:15px;
   /*left: VARIABLE
   width: VARIABLE*/
   height:60px;
   z-index: 5;
+  -webkit-box-sizing: border-box;
+}
+/*cover hover effect*/
+.locatorDiv:hover{
+  /* background-color: gray;
+  opacity: 0.8; */
+  /* cursor:not-allowed; */
 }
 .locator_rect{
   position:absolute;
@@ -52,8 +87,10 @@
   opacity:0.35;
   background-color: gray;
   border: 1px solid blue;
+  -webkit-box-sizing: border-box;
+  display:none;
 }
-.panoramaSelection{
+.highlightBox{
   position:absolute;
   display:none;
   top:0px;
@@ -77,5 +114,27 @@
   display:none;
   float:left;
   /*display:block(while inside), none ouside div;
-  left: VARIABLE
+  left: VARIABLE*/
+}
+.disabled{
+  pointer-events:none;
+}
+.resizer{
+  z-index: 10;
+  position: absolute;
+  top:1px;
+  height:11px;
+  /* height:100%; */
+  width:9px;
+  background-color:blue;
+}
+.right{
+  right:0px;
+  cursor: e-resize;
+  display:none;
+}
+.left{
+  left:0px;
+  cursor: w-resize;
+  display:none;
 }

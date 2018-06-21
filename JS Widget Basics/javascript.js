@@ -66,35 +66,39 @@ $( function() {
         drawHighlightBox();
 
       });
-      sequenceDiv.addEventListener('mouseout',function(e){
+      sequenceDiv.addEventListener('mouseleave',function(e){
         //console.log('mouseout '+e.clientX);
         barMarker.style.display = 'none';
       });
       sequenceDiv.addEventListener('mousedown', function(evt){
-        selectHighlight.style.display = 'inline';
-        highlightBox_x1 = barMarker.style.left;
-        //console.log(highlightBox_x1);
-        drawHighlightBox();
-
+        //ensure left mouse button clicked
+        if(evt.which==1){
+          selectHighlight.style.display = 'inline';
+          highlightBox_x1 = barMarker.style.left;
+          //console.log(highlightBox_x1);
+          drawHighlightBox();
+        }
       });
       sequenceDiv.addEventListener('mouseup', function(evt){
-        selectHighlight.style.display = 'none';
-        highlightBox_x2 = barMarker.style.left;
-        var res = drawHighlightBox();
-        //console.log(res);
-
-        // $(window).keydown(function(e){
-        //     if (e.ctrlKey){
-        //       console.log('Control Down');
-        //     }
-        //
-        // });
-        multipleSelect=false;
-        if(evt.ctrlKey){
-          multipleSelect=true;
-          console.log('ctrl+clickup');
+        console.log('clicked!');
+      });
+      sequenceDiv.addEventListener('mouseup', function(evt){
+        //ensure left mouse button clicked
+        if(evt.which == 1){
+          selectHighlight.style.display = 'none';
+          highlightBox_x2 = barMarker.style.left;
+          var res = drawHighlightBox();
+          //console.log(res);
+          multipleSelect=false;
+          if(evt.ctrlKey){
+            multipleSelect=true;
+            console.log('ctrl+clickup');
+          }
+          //draw selection box
+          drawSelector(res);
+          //
         }
-        drawSelector(res);
+
       });
 
       function drawHighlightBox(){
@@ -112,16 +116,45 @@ $( function() {
       }
       function drawSelector(res){
 
-
+        var id = 0;
         var newDiv = document.createElement('div');
         var newDivChild = document.createElement('div');
+        var newDivChildLR = document.createElement('div');
+        var newDivChildRR = document.createElement('div');
 
         newDiv.style.left = res.left;
         newDiv.style.width = res.width;
         newDiv.className = "locatorDiv";
+        newDiv.id = 'locator-element'+id;
+        newDiv.style.display = "block";
+
         newDivChild.className = "locator_rect";
+        newDivChildLR.className = "left resizer";
+        newDivChildRR.className = "right resizer";
+
+        newDivChild.style.display = "block";
+        newDivChildLR.style.display = "block";
+        newDivChildRR.style.display = "block";
+
+
+        newDiv.addEventListener('mouseenter', function(e){
+          //console.log('on!');
+          //newDiv.style.pointerEvents='none';
+          //sequenceDiv.classList.toggle('disabled');
+          //newDiv.classList.remove('disabled');
+          //newDiv.style.pointerEvents='auto';
+
+        });
+        newDiv.addEventListener('mouseleave', function(e){
+          //newDiv.style.pointerEvents='auto';
+          //console.log('out!!');
+          //sequenceDiv.classList.toggle('disabled');
+        });
         if(multipleSelect){
+
           newDiv.appendChild(newDivChild);
+          newDiv.appendChild(newDivChildLR);
+          newDiv.appendChild(newDivChildRR);
           document.getElementById('sequence0').appendChild(newDiv);
         }
         else{
@@ -130,13 +163,30 @@ $( function() {
 
           //and then create element
           newDiv.appendChild(newDivChild);
+          newDiv.appendChild(newDivChildLR);
+          newDiv.appendChild(newDivChildRR);
           document.getElementById('sequence0').appendChild(newDiv);
         }
+        // var locatorDiv = document.getElementById('locator element '+id);
+        // locatorDiv
+        // locatorDiv.addEventListener('mousemove', function(e){
+        //   console.log('on newDiv!' + e.clientX);
+        //   //locatorDiv.style.pointerEvents='none';
+        //
+        // });
 
       }
 
+      document.body.addEventListener('contextmenu', function(ev) {
+          ev.preventDefault();
+          //alert('Right Click Performed!');
+          $('.locatorDiv').remove();
+          //$('.highlightBox').remove();
+          return false;
+      }, false);
+
   } );
-  
+
   var jspdb = {
     create: function(id, options){
       var newObj={};
@@ -159,7 +209,7 @@ $( function() {
       //1. Parse/match file reference
       var type = /^([a-zA-z]){4,5}:\/\//;
       var res = type.exec(data);
-      console.log(res);
+      //console.log(res);
       //assume local data?
       if(res==null){
         obj.data = data;
@@ -202,9 +252,10 @@ window.onload=function(){
     var obj1 = jspdb.create("test1",{readonly:"true"});
     var obj2 = jspdb.create("div2",{fileformat:"pdb"});
 
-      console.log("obj1: " + JSON.stringify(obj1));
-      console.dir(obj1);
-      console.dir(obj2);
+    //logging objects
+      // console.log("obj1: " + JSON.stringify(obj1));
+      // console.dir(obj1);
+      // console.dir(obj2);
 
   //add event listeners
   jspdb.listen(obj1);
@@ -228,7 +279,7 @@ window.onload=function(){
 
   }
   //add event listener for when the user selects a file
-  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+  //document.getElementById('files').addEventListener('change', handleFileSelect, false);
   //do something with data
 
   //other stuff
@@ -238,7 +289,19 @@ window.onload=function(){
   });
 
 
-console.log($('sequence').height());
+  var seqDiv = document.getElementById('sequence0');
+
+
+  //initialize span elements
+  for(var i=1;i<30;i++){
+    var newSpan = document.createElement('span');
+    newSpan.className = 'res';
+    var val = document.createTextNode(i);
+    newSpan.appendChild(val);
+    newSpan.id = 'res'+i;
+    seqDiv.appendChild(newSpan);
+    //console.log(newSpan);
+  }
 
 
 }
