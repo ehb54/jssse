@@ -39,27 +39,24 @@
     background-color: green;
     opacity: 0.5;
 } */
-* { user-select: none; }
 .res{
-
-  z-index:-1;
-  width:30px;
-  height:30px;
-  display:inline-block;
   position:relative;
-  top:20%;
-  margin:0px 5px;
-  /* padding-left:5px;
-  padding-right:5px; */
-  /* pointer-events: none; */
+  top:40%;
+  /* margin-top:-9px; */
+  padding-left:5px;
+  padding-right:5px;
+  pointer-events: none;
   border: 1px solid black;
   font-family: Consolas, monaco, monospace;
-  text-align:center;
-  line-height:30px;
-  border:0px;
 
-  background-color: lightblue;
-
+  /*make text unselectable*/
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
 }
 /*new stuff*/
 .sequenceDiv{
@@ -119,7 +116,9 @@
   /*display:block(while inside), none ouside div;
   left: VARIABLE*/
 }
-
+.disabled{
+  pointer-events:none;
+}
 .resizer{
   z-index: 10;
   position: absolute;
@@ -138,22 +137,4 @@
   left:0px;
   cursor: w-resize;
   display:none;
-}
-/*with dragselectJS*/
-.ds-selected {
-  outline: 3px solid black;
-  outline-offset: 3px;
-  color: black;
-  font-weight: bold;
-}
-#customSelector{
-  position: absolute;
-  background: rgba(0, 0, 255, 0.1);
-  border: 1px solid rgba(0, 0, 255, 0.45);
-  display: none;
-  pointer-events: none;
-  height: 30px;
-  left: 112px;
-  top: 22px;
-  width: 0px;
 }

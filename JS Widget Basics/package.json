@@ -12,5 +12,8 @@
   "dependencies": {
     "jquery-ui": "^1.12.1",
     "nodemon": "^1.17.5"
+  },
+  "devDependencies": {
+    "dragselect": "^1.7.24"
   }
 }

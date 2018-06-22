@@ -1,190 +1,31 @@
 
 $( function() {
-//     the widget definition, where "custom" is the namespace,
-//     "jspdb" the widget name
-    $.widget( "custom.jspdb", {
-      // default options
-      options: {
-        red: 255,
-        green: 0,
-        blue: 0,
 
-        // Callbacks
-        change: null,
-        random: null
-      },
+  var seqDiv = document.getElementById('sequence0');
 
-      // The constructor
-      _create: function() {
-        this.element
-          // add a class for theming
-          .addClass( "custom-colorize" )
-          .css( "background-color", "rgb(" +
-            this.options.red +"," +
-            this.options.green + "," +
-            this.options.blue + ")"
-          );
-          //handle events
-        this._on(this.element, {
-          click: "_message"
-        });
-      },
 
-    //private method
-    _message: function(event){
-      //this refers to widget instance
-      console.log("element id: "+this.element[0].id+"\n");
-    }
+  //initialize span elements
+  for(var i=1;i<30;i++){
+    var newSpan = document.createElement('span');
+    newSpan.className = 'res';
+    var val = document.createTextNode(i);
+    newSpan.appendChild(val);
+    newSpan.id = 'res'+i;
+    seqDiv.appendChild(newSpan);
+    //console.log(newSpan);
+  }
+
+  var ds = new DragSelect({
+  selectables: document.getElementsByClassName('res'),
+  area: document.getElementById('sequence0'),
+  callback: function(){
+    console.log(ds.getSelection());
+  },
+  selector: document.getElementById('customSelector')
+
 });
-
-
-    // Initialize with default options
-    $( "#my-widget1" ).jspdb().dialog();
-
-    // Initialize with two customized options
-    $( "#my-widget2" ).jspdb({
-      red: 60,
-      blue: 60
-    })
-    .dialog();
-
-      //initialize variables
-      var highlightBox_x1=0;
-      var highlightBox_x2=0;
-      var multipleSelect = false;
-      var sequenceDiv = document.getElementById('sequence0');
-      var barMarker = document.getElementById('marker');
-      var selectHighlight = document.getElementById('selectLocator');
-      var selectSequence = document.getElementById('main-selector');
-      //console.log(barMarker);
-      sequenceDiv.addEventListener('mousemove', function(e){
-        //console.log('mousein '+e.clientX);
-        barMarker.style.display = 'block';
-        barMarker.style.left = (e.pageX-10)+'px';
-        highlightBox_x2 = barMarker.style.left;
-        //console.log(highlightBox_x2);
-        drawHighlightBox();
-
-      });
-      sequenceDiv.addEventListener('mouseleave',function(e){
-        //console.log('mouseout '+e.clientX);
-        barMarker.style.display = 'none';
-      });
-      sequenceDiv.addEventListener('mousedown', function(evt){
-        //ensure left mouse button clicked
-        if(evt.which==1){
-          selectHighlight.style.display = 'inline';
-          highlightBox_x1 = barMarker.style.left;
-          //console.log(highlightBox_x1);
-          drawHighlightBox();
-        }
-      });
-      sequenceDiv.addEventListener('mouseup', function(evt){
-        console.log('clicked!');
-      });
-      sequenceDiv.addEventListener('mouseup', function(evt){
-        //ensure left mouse button clicked
-        if(evt.which == 1){
-          selectHighlight.style.display = 'none';
-          highlightBox_x2 = barMarker.style.left;
-          var res = drawHighlightBox();
-          //console.log(res);
-          multipleSelect=false;
-          if(evt.ctrlKey){
-            multipleSelect=true;
-            console.log('ctrl+clickup');
-          }
-          //draw selection box
-          drawSelector(res);
-          //
-        }
-
-      });
-
-      function drawHighlightBox(){
-        //console.log(highlightBox_x1);
-        selectHighlight.style.left = highlightBox_x1;
-        var res={};
-        selectHighlight.style.width = parseInt( highlightBox_x2, 10 ) - parseInt( highlightBox_x1, 10 ) + "px";
-        res = {
-          left: selectHighlight.style.left,
-          width: selectHighlight.style.width
-        };
-
-        return res;
-        //console.log(selectHighlight.style.width);
-      }
-      function drawSelector(res){
-
-        var id = 0;
-        var newDiv = document.createElement('div');
-        var newDivChild = document.createElement('div');
-        var newDivChildLR = document.createElement('div');
-        var newDivChildRR = document.createElement('div');
-
-        newDiv.style.left = res.left;
-        newDiv.style.width = res.width;
-        newDiv.className = "locatorDiv";
-        newDiv.id = 'locator-element'+id;
-        newDiv.style.display = "block";
-
-        newDivChild.className = "locator_rect";
-        newDivChildLR.className = "left resizer";
-        newDivChildRR.className = "right resizer";
-
-        newDivChild.style.display = "block";
-        newDivChildLR.style.display = "block";
-        newDivChildRR.style.display = "block";
-
-
-        newDiv.addEventListener('mouseenter', function(e){
-          //console.log('on!');
-          //newDiv.style.pointerEvents='none';
-          //sequenceDiv.classList.toggle('disabled');
-          //newDiv.classList.remove('disabled');
-          //newDiv.style.pointerEvents='auto';
-
-        });
-        newDiv.addEventListener('mouseleave', function(e){
-          //newDiv.style.pointerEvents='auto';
-          //console.log('out!!');
-          //sequenceDiv.classList.toggle('disabled');
-        });
-        if(multipleSelect){
-
-          newDiv.appendChild(newDivChild);
-          newDiv.appendChild(newDivChildLR);
-          newDiv.appendChild(newDivChildRR);
-          document.getElementById('sequence0').appendChild(newDiv);
-        }
-        else{
-          //clear all select rectangles if ctrl+click is not clicked
-          $('.locatorDiv').remove();
-
-          //and then create element
-          newDiv.appendChild(newDivChild);
-          newDiv.appendChild(newDivChildLR);
-          newDiv.appendChild(newDivChildRR);
-          document.getElementById('sequence0').appendChild(newDiv);
-        }
-        // var locatorDiv = document.getElementById('locator element '+id);
-        // locatorDiv
-        // locatorDiv.addEventListener('mousemove', function(e){
-        //   console.log('on newDiv!' + e.clientX);
-        //   //locatorDiv.style.pointerEvents='none';
-        //
-        // });
-
-      }
-
-      document.body.addEventListener('contextmenu', function(ev) {
-          ev.preventDefault();
-          //alert('Right Click Performed!');
-          $('.locatorDiv').remove();
-          //$('.highlightBox').remove();
-          return false;
-      }, false);
-
+//modify ds-selector (css loads before)
+document.getElementsByClassName('ds-selector')[0].style.height = '75px';
   } );
 
   var jspdb = {
@@ -289,19 +130,7 @@ window.onload=function(){
   });
 
 
-  var seqDiv = document.getElementById('sequence0');
 
-
-  //initialize span elements
-  for(var i=1;i<30;i++){
-    var newSpan = document.createElement('span');
-    newSpan.className = 'res';
-    var val = document.createTextNode(i);
-    newSpan.appendChild(val);
-    newSpan.id = 'res'+i;
-    seqDiv.appendChild(newSpan);
-    //console.log(newSpan);
-  }
 
 
 }
