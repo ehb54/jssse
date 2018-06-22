@@ -2,10 +2,11 @@
 $( function() {
 
   var seqDiv = document.getElementById('sequence0');
+  var zoomBox = document.getElementsByClassName('sequenceZoomDiv')[0];
 
 
   //initialize span elements
-  for(var i=1;i<30;i++){
+  for(var i=1;i<80;i++){
     var newSpan = document.createElement('span');
     newSpan.className = 'res';
     var val = document.createTextNode(i);
@@ -19,13 +20,56 @@ $( function() {
   selectables: document.getElementsByClassName('res'),
   area: document.getElementById('sequence0'),
   callback: function(){
+    //clear all elements first
+    $(".res.zoom").remove();
+
     console.log(ds.getSelection());
+    var selection = ds.getSelection();
+
+
+    //sort selection by id
+    //var reg = /res(\d)/g;
+    var arr = [];
+    for(var i = 0; i<selection.length;i++){
+
+      var id = parseInt(selection[i].innerText);
+      arr.push(id);
+    }
+    arr.sort(function (a, b) {  return a - b;  });
+
+    //loop through selection and create zoomable rects
+    for(var resIndex=0; resIndex<selection.length;resIndex++){
+      var resZoom = document.createElement('span');
+      resZoom.className = 'res zoom';
+      var resZoomID = arr[resIndex];
+      resZoom.innerText = arr[resIndex].toString();
+      //resZoom.style.transform = 'scale(2)';
+      resZoom.style.height = '30px';
+      resZoom.style.width = '30px';
+      resZoom.style.fontSize = '14px';
+      resZoom.style.margin = '5px';
+      resZoom.style.border = '1px solid black';
+      resZoom.style.lineHeight = '30px';
+      resZoom.style.top = '30%';
+      zoomBox.appendChild(resZoom);
+
+    }
+
+    //check if div has any elements
+    if (!zoomBox.hasChildNodes()){
+      zoomBox.style.display = 'none';
+    }
+    else{
+      zoomBox.style.display = 'inline-block';
+    }
   },
   selector: document.getElementById('customSelector')
 
 });
 //modify ds-selector (css loads before)
-document.getElementsByClassName('ds-selector')[0].style.height = '75px';
+//document.getElementsByClassName('ds-selector')[0].style.height = '75px';
+
+
   } );
 
   var jspdb = {
