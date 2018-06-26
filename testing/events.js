@@ -254,3 +254,11 @@ jssse.bobjInfo( bobj );
 jssse.redo( bobj, 1, ( err, eventObj ) => { console.log( "callback from redo: error: " + err + " eventObj:" + JSON.stringify( eventObj ) ); } );
 jssse.bobjInfo( bobj );
 jssse.redo( bobj, 1, ( err, eventObj ) => { console.log( "callback from redo: error: " + err + " eventObj:" + JSON.stringify( eventObj ) ); } );
+
+// now undo 2 beginning
+jssse.undo( bobj, -1, ( err, eventObj ) => { console.log( "callback from undo: error: " + err + " eventObj:" + JSON.stringify( eventObj ) ); } );
+jssse.bobjInfo( bobj );
+// and redo 2 end
+jssse.redo( bobj, -1, ( err, eventObj ) => { console.log( "callback from redo: error: " + err + " eventObj:" + JSON.stringify( eventObj ) ); } );
+jssse.bobjInfo( bobj );
+
