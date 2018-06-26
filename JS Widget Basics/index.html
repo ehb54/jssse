@@ -12,8 +12,9 @@
       <link rel="stylesheet" href="style.css">
       <!-- <link rel="stylesheet" href="http:///resources/demos/style.css"> -->
       <!-- <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> -->
-      <script src="node_modules/dragselect/src/DragSelect.js"></script>
+
       <script src="javascript.js"></script>
+      <script src="node_modules/dragselect/src/DragSelect.js"></script>
 
   </head>
   <body>
@@ -40,7 +41,20 @@
     <div id="marker"></div>
     <div id="customSelector"></div>
   </div>
-  <div class="sequenceZoomDiv"></div>
+  <div style="text-align:center;">
+    <div class="sequenceZoomDiv" style="display:inline-block">
+      <div>
+        <h3>CURRENT SELECTION</h3>
+        <span>START </span>
+        <span id="startIndex"></span>
+        <span> : END </span>
+        <span id="endIndex"></span>
+      </div>
+      <div id="selectDisplay"></div>
+
+    </div>
+  </div>
+
 
   </body>
 </html>

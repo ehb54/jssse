@@ -68,9 +68,11 @@
   border:2px solid black;
 }
 .sequenceZoomDiv{
-  display: none;
+  /* display: none; */
+  display
   height:75px;
   border: 2px solid black;
+  text-align: center;
 }
 .locatorDiv{
   position:absolute;
@@ -161,4 +163,12 @@
   left: 112px;
   top: 22px;
   width: 0px;
+}
+.subarray{
+  margin:10px;
+  border:1px solid black;
+}
+.bob{
+  display:inline-block;
+   width:1px;
 }
