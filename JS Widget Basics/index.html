@@ -26,25 +26,23 @@
   <div id="my-widget2" title="Widget Draft 1 (ignore)">Div 2</div> -->
   <!-- <input type="file" id="files" name="files[]" multiple /> -->
   <!-- <output id="list"></output> -->
-  <div class="sequenceDiv" id="sequence0">
+  <div class="sequenceDiv" id="sequence0" tabindex="0">
     <!-- <span class="res" id="res1">1</span>
     <span class="res" id="res2">2</span>
     <span class="res" id="res3">3</span>
     <span class="res" id="res4">4</span>
     <span class="res" id="res5">5</span> -->
-    <div class="locatorDiv" id="main-selector">
-      <div class="locator_rect"></div>
-      <div class="left resizer"></div>
-      <div class="right resizer"></div>
+    <div id="locatorDiv">
+      <div id="locatorBox"></div>
     </div>
-    <div id="selectLocator" class="highlightBox"></div>
+    <!-- <div id="selectLocator" class="highlightBox"></div> -->
     <div id="marker"></div>
     <div id="customSelector"></div>
   </div>
   <div style="text-align:center;" id="mainseqdiv">
     <div class="sequenceZoomDiv" style="display:inline-block">
       <div>
-        <h3>CURRENT SELECTION</h3>
+        <strong>CURRENT SELECTION</strong>
         <div style="text-align:center;"><button id="clearSelection" >Clear Selection</button></div>
         <span>START </span>
         <span id="startIndex"></span>

@@ -8,9 +8,12 @@ $( function() {
    format: [{res#: _uuid}, ...  ]
    res: [{ala1: "_8vmw96mko"}, {glu2: "_y6cdst2mm"}, ...]
    */
-  //console.log('dom ready');
   var seqDiv = document.getElementById('sequence0');
-  var seqDivWidth = seqDiv.offsetWidth;
+  seqDiv.focus();
+
+  var locatorDiv = document.getElementById('locatorDiv');
+  var locatorBox = document.getElementById('locatorBox');
+  var seqDivWidth = seqDiv.offsetWidth-4;
   var zoomBox = document.getElementsByClassName('sequenceZoomDiv')[0];
   var seqSelDiv = document.getElementById('selectDisplay');
   var seqSelRangeDiv = document.getElementById('selectDisplayRange');
@@ -22,6 +25,9 @@ $( function() {
   var aminoAcidArr = [
     "ala", "arg", "asn", "asp", "cys", "gln", "glu", "gly", "his","ile","leu","lys", "met", "phe", "pro", "ser", "thr","trp", "tyr", "val"
   ];
+
+  var eltWidth;
+
 /*
 * Make modular/general w/ API - think about init. (*list* of vals (not necessarily res #'s))
 */
@@ -50,7 +56,7 @@ $( function() {
     var newDivider = document.createElement('div');
     newDivider.className = 'divider';
 
-    if(i%10==0){
+    if(i%10==0 && i!= 0){
       //console.log(i);
       //rudimentary calculation
       newDivider.style.left = (seqDivWidth/num)*i + 'px';
@@ -59,6 +65,8 @@ $( function() {
       seqDiv.appendChild(newDivider);
     }
   }
+  eltWidth = document.getElementsByClassName('bob')[0].getBoundingClientRect().width;
+  //console.log(eltWidth);
   //console.log(arrObjGlobal);
   //console.log(Object.keys(arrObjGlobal));
 
@@ -66,6 +74,7 @@ $( function() {
   var ds = new DragSelect({
   selectables: document.getElementsByClassName('bob'),
   area: document.getElementById('sequence0'),
+  multiSelectKeys: ['ctrlKey'],
   onDragMove: function(e){
     var selection = ds.getSelection();
 
@@ -163,7 +172,7 @@ function arrUpdate(val, option){
     var objArrKey = "arr"+objArrKeyIndex;
     arrDisp[objArrKeyIndex][objArrKey].push(val);
   }
-//console.log(arrDisp)
+  //console.log(arrDisp)
   //console.log(arrDisp[0]['arr'+objArrKeyIndex]);
   //console.log('length: '+arrDisp.length);
 }
@@ -172,7 +181,7 @@ function updateCurrSelection(text, type, spanID, mode){
   //dynamically display current selection:
   var str = "";
   if (mode=='update'){
-      console.log(text);
+      //console.log(text);
      str = parseKey(text, type).toString();
 
   }
@@ -235,7 +244,7 @@ function updateSelDisplay(){
       selInfospan.appendChild(textNode);
       selInfospan.classList.add('subarray');
 
-      seqSelDetDiv.appendChild(selInfospan);
+      //seqSelDetDiv.appendChild(selInfospan);
     }
   }
 }
@@ -335,16 +344,40 @@ var barMarker = document.getElementById('marker');
 seqDiv.addEventListener('mousemove', function(e){
   //console.log('mousein '+e.clientX);
   barMarker.style.display = 'block';
-  barMarker.style.left = (e.pageX-10)+'px';
-  highlightBox_x2 = barMarker.style.left;
+  barMarker.style.left = (e.pageX-8)+'px';
+  //console.log(parseInt(barMarker.style.left) - seqDiv.offsetLeft + 10);
+  //highlightBox_x2 = barMarker.style.left;
   //console.log(highlightBox_x2);
   //drawHighlightBox();
+  displayLocator(getEltByWidth(e.pageX-8));
 
 });
 seqDiv.addEventListener('mouseleave',function(e){
   //console.log('mouseout '+e.clientX);
   barMarker.style.display = 'none';
+  locatorDiv.style.display = 'none';
 });
+seqDiv.addEventListener('click',function(e){
+  if(e['shiftKey']){
+    //console.log('we here');
+  }
+});
+seqDiv.addEventListener('keydown',function(e){
+  if(e.shiftKey){
+    console.log('we here');
+  }
+
+});
+  function displayLocator(loc){
+    locatorDiv.style.display='block';
+    locatorBox.innerText=loc;
+  }
+  function getEltByWidth(x){
+    var delta = Math.ceil(x/eltWidth);
+    return delta;
+  }
+
+  //ds.addSelection(document.getElementById(arrObjGlobal[3][1].id))
 } );//end of jQuery.ready()
 
 //JSPDB object definition

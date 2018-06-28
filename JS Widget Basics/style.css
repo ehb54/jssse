@@ -74,7 +74,7 @@
   border: 2px solid black;
   text-align: center;
 }
-.locatorDiv{
+#locatorDiv{
   position:absolute;
   top:15px;
   /*left: VARIABLE
@@ -82,6 +82,10 @@
   height:60px;
   z-index: 5;
   -webkit-box-sizing: border-box;
+  display: none;
+}
+#locatorBox{
+  display: inline-block;
 }
 /*cover hover effect*/
 .locatorDiv:hover{
@@ -148,10 +152,11 @@
 }
 /*with dragselectJS*/
 .ds-selected {
-  outline: 2px solid black;
+  /* outline: 2px solid black; */
   /* outline-offset: 1px; */
   color: black;
-  font-weight: bold;
+  /* font-weight: bold; */
+  background-color: black;
 }
 #customSelector{
   position: absolute;
