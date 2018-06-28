@@ -1,33 +1,66 @@
 //shorthand for $(document).ready(function(){ //CODE})
 $( function() {
+
+  //JSSE OBJECT should provide # of residues, array of objects in such format
+  var num = 200;
+  /**
+   * GLOBAL OBJECT Array definition
+   format: [{res#: _uuid}, ...  ]
+   res: [{ala1: "_8vmw96mko"}, {glu2: "_y6cdst2mm"}, ...]
+   */
+  //console.log('dom ready');
   var seqDiv = document.getElementById('sequence0');
+  var seqDivWidth = seqDiv.offsetWidth;
   var zoomBox = document.getElementsByClassName('sequenceZoomDiv')[0];
   var seqSelDiv = document.getElementById('selectDisplay');
+  var seqSelRangeDiv = document.getElementById('selectDisplayRange');
+  var seqSelDetDiv = document.getElementById('selectDisplayDetails');
   var arrObjGlobal = [];
+  //var arrObjGlobal = {};
   var type = "res";
   var arrDisp = [];
+  var aminoAcidArr = [
+    "ala", "arg", "asn", "asp", "cys", "gln", "glu", "gly", "his","ile","leu","lys", "met", "phe", "pro", "ser", "thr","trp", "tyr", "val"
+  ];
 /*
 * Make modular/general w/ API - think about init. (*list* of vals (not necessarily res #'s))
 */
   //initialize span elements
-  for(var i=1;i<1000;i++){
+  for(var i=1;i<num;i++){
     var newSpan = document.createElement('span');
     newSpan.className = 'bob';
+    newSpan.style.width = (seqDivWidth/num) + 'px';
     //assign text temporarily
     //var val = document.createTextNode(i);
     //newSpan.appendChild(val);
-    //newSpan.id = '_' + Math.random().toString(36).substr(2, 9);
-    newSpan.id = i;
+    newSpan.id = '_' + Math.random().toString(36).substr(2, 9);
+    //newSpan.id = i;
     seqDiv.appendChild(newSpan);
 
     //assuming res id's unique, make keys ordered and sorted to make later arithmetic easier (parse obj for string instead of res)
-    var key = 'res'+i;
+
+    var key = aminoAcidArr[Math.floor(Math.random() * Math.floor(aminoAcidArr.length-1))]+i;
+    //var key = "res"+i;
+    //console.log();
     var obj = {};
     obj[key] = newSpan.id;
     arrObjGlobal.push(obj);
-    //console.log(newSpan);
+    //arrObjGlobal[key]=newSpan.id;
+    //insert dividers
+    var newDivider = document.createElement('div');
+    newDivider.className = 'divider';
+
+    if(i%10==0){
+      //console.log(i);
+      //rudimentary calculation
+      newDivider.style.left = (seqDivWidth/num)*i + 'px';
+      var textNode = document.createTextNode(i);
+      newDivider.appendChild(textNode);
+      seqDiv.appendChild(newDivider);
+    }
   }
-  //console.log(arrObjGlobal[0]);
+  //console.log(arrObjGlobal);
+  //console.log(Object.keys(arrObjGlobal));
 
 //initiate ds variable
   var ds = new DragSelect({
@@ -43,7 +76,7 @@ $( function() {
       var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
 
       //console.log(matchedKey);
-      updateCurrSelection(matchedKey, type, 'endIndex');
+      updateCurrSelection(matchedKey, type, 'endIndex', 'update');
     }
     //arrUpdate(selection);
     //console.log(lastElt);
@@ -56,11 +89,11 @@ $( function() {
     //only do computations if there selection array isn't empty
     if(selection.length>0){
       var lastElt = selection[selection.length-1].id;
-
+      //console.log(lastElt);
       var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
 
-      console.log(matchedKey);
-      updateCurrSelection(matchedKey, type, 'startIndex');
+      //console.log(matchedKey);
+      updateCurrSelection(matchedKey, type, 'startIndex', 'update');
     }
 
 
@@ -70,11 +103,18 @@ $( function() {
     //clear all elements first
     $(".res.zoom").remove();
 
+
     //console.log('liftoff!');
     var selection = ds.getSelection();
 
+    if(selection.length==0){
+      updateCurrSelection('','','startIndex',0);
+      updateCurrSelection('','','endIndex',0);
+    }
     calibrateDisp(selection);
     updateSelDisplay();
+    //console.log('sel array start: '+getKeyByValue(arrObjGlobal, selection[0].id));
+    //console.log('sel array end: '+getKeyByValue(arrObjGlobal, selection[selection.length-1].id));
     //loop through selection and create zoomable rects
     for(var resIndex=0; resIndex<selection.length;resIndex++){
       var resZoom = document.createElement('span');
@@ -127,10 +167,15 @@ function arrUpdate(val, option){
   //console.log(arrDisp[0]['arr'+objArrKeyIndex]);
   //console.log('length: '+arrDisp.length);
 }
-function updateCurrSelection(text, type, spanID){
+function updateCurrSelection(text, type, spanID, mode){
 
   //dynamically display current selection:
-  var str = parseKey(text, type).toString();
+  var str = "";
+  if (mode=='update'){
+      console.log(text);
+     str = parseKey(text, type).toString();
+
+  }
   document.getElementById(spanID).innerText = str;
 }
 
@@ -138,14 +183,19 @@ function updateSelDisplay(){
   //add display for SELECTION
   var len=arrDisp.length;
 
+  //clear children first
+  while (seqSelRangeDiv.firstChild) {
+    seqSelRangeDiv.removeChild(seqSelRangeDiv.firstChild);
+  }
+  while (seqSelDetDiv.firstChild) {
+    seqSelDetDiv.removeChild(seqSelDetDiv.firstChild);
+  }
   if(len>0){
-    //clear children first
-    while (seqSelDiv.firstChild) {
-      seqSelDiv.removeChild(seqSelDiv.firstChild);
-    }
+
     for(var i=0;i<len;i++){
       //initialize 'from' text
       var selspan = document.createElement('span');
+      var selInfospan = document.createElement('span');
       //startCount.style.margin = "0px 2px";
       var subarray = arrDisp[i]['arr'+i];
       var text = (subarray[0]).toString();
@@ -153,8 +203,8 @@ function updateSelDisplay(){
       //if subarray has more than one element, initialize colon part and 'to' part
       if(subarray.length>1){
 
-        //INTERMEDIATE PART (colon)
-        var mid = ' : ';
+        //additional part (intermediate and end)
+        var mid = ' - ';
         var toText = (subarray[subarray.length-1]).toString();
         text+=mid;
         text+=toText;
@@ -164,7 +214,28 @@ function updateSelDisplay(){
       selspan.appendChild(textNode);
       selspan.classList.add('subarray');
 
-      seqSelDiv.appendChild(selspan);
+      seqSelRangeDiv.appendChild(selspan);
+
+      //seqSelDetDiv
+      //get res name
+      //console.log(subarray[0]);
+
+      var detailsDisp = [];
+      for(var j = 0;j<subarray.length;j++){
+        for (key in arrObjGlobal[subarray[j]-1]){
+          var reg = new RegExp('(\\w{3})\\d+', "g");
+          var res = reg.exec(key)[1];
+          detailsDisp.push(res);
+        }
+        //console.log(arrObjGlobal[subarray[j]]);
+      }
+      text = JSON.stringify(detailsDisp);
+      //console.log(text);
+      textNode = document.createTextNode(text);
+      selInfospan.appendChild(textNode);
+      selInfospan.classList.add('subarray');
+
+      seqSelDetDiv.appendChild(selInfospan);
     }
   }
 }
@@ -213,7 +284,12 @@ function calibrateDisp(sel){
   }
 }
 function parseKey(text, type){
-  var reg = new RegExp(type+'(\\d+)', "g");
+  //instead of type, use general 3 letters for residue name?
+  var reg;
+  if(type=='res'){
+    reg = new RegExp('\\w{3}(\\d+)', "g");
+  }
+
   //console.log(text);
   var res = parseInt(reg.exec(text)[1]);
   //console.log(res);
@@ -222,12 +298,54 @@ function parseKey(text, type){
 }
 function getKeyByValue(arr, value) {
   for(var i=0, iLen = arr.length; i<iLen;i++){
-    var key = 'res'+ (i+1);
-    if(arr[i][key] == value){return key;}
+    for (key in arr[i]){
+      //var key = type+ (i+1);
+      if(arr[i][key] == value){return key;}
+    }
+
   }
+  //return Object.keys(arr).find(key => arr[key] === value);
 }
-console.log('END OF JQUERY SELECTOR');
-} );//end
+function getDeepKeys(obj) {
+    var keys = [];
+    for(var key in obj) {
+        keys.push(key);
+        if(typeof obj[key] === "object") {
+            var subkeys = getDeepKeys(obj[key]);
+            keys = keys.concat(subkeys.map(function(subkey) {
+                return key + "." + subkey;
+            }));
+        }
+    }
+    return keys;
+}
+//console.log(getDeepKeys(arrObjGlobal));
+//console.log(arrObjGlobal.find());
+//add clear selection functionality
+var btn = document.getElementById('clearSelection');
+btn.addEventListener('click',function(e){
+  ds.clearSelection();
+  arrDisp.length=0;
+  updateSelDisplay();
+  updateCurrSelection('','','startIndex',0);
+  updateCurrSelection('','','endIndex',0);
+});
+var barMarker = document.getElementById('marker');
+//add marker to follow mouse in div
+seqDiv.addEventListener('mousemove', function(e){
+  //console.log('mousein '+e.clientX);
+  barMarker.style.display = 'block';
+  barMarker.style.left = (e.pageX-10)+'px';
+  highlightBox_x2 = barMarker.style.left;
+  //console.log(highlightBox_x2);
+  //drawHighlightBox();
+
+});
+seqDiv.addEventListener('mouseleave',function(e){
+  //console.log('mouseout '+e.clientX);
+  barMarker.style.display = 'none';
+});
+} );//end of jQuery.ready()
 
 //JSPDB object definition
   var jspdb = {
@@ -287,11 +405,12 @@ console.log('END OF JQUERY SELECTOR');
  *  dialog, adding eventlisteners)
 */
 window.onload=function(){
-  console.log('Beginning of WINDOW ONLOAD');
+
   //make div a jQuery UI dialog Box (maybe in jspdb object definition?)
   $("#test1").dialog().css("background-color","blue");
   $("#div2").dialog().css("background-color", "red");
 
+  //$("#mainseqdiv").dialog();
   //create objects (debugging purposes - can view obj1, obj2 properties in console)
     var obj1 = jspdb.create("test1",{readonly:"true"});
     var obj2 = jspdb.create("div2",{fileformat:"pdb"});

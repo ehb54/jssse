@@ -41,16 +41,20 @@
     <div id="marker"></div>
     <div id="customSelector"></div>
   </div>
-  <div style="text-align:center;">
+  <div style="text-align:center;" id="mainseqdiv">
     <div class="sequenceZoomDiv" style="display:inline-block">
       <div>
         <h3>CURRENT SELECTION</h3>
+        <div style="text-align:center;"><button id="clearSelection" >Clear Selection</button></div>
         <span>START </span>
         <span id="startIndex"></span>
         <span> : END </span>
         <span id="endIndex"></span>
       </div>
-      <div id="selectDisplay"></div>
+      <div id="selectDisplay">
+        <div id="selectDisplayRange"></div>
+        <div id="selectDisplayDetails"></div>
+      </div>
 
     </div>
   </div>

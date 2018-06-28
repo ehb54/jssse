@@ -168,7 +168,16 @@
   margin:10px;
   border:1px solid black;
 }
+/*placeholder element (instead of residue)*/
 .bob{
   display:inline-block;
-   width:1px;
+   /* width:1px; */
+   height:10px;
+}
+.divider{
+    position:absolute;
+    /* left:50%; */
+    top:30%;
+    bottom:30%;
+    border-left:1px solid black;
 }
