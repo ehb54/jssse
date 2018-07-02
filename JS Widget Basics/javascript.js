@@ -9,12 +9,12 @@ $( function() {
    res: [{ala1: "_8vmw96mko"}, {glu2: "_y6cdst2mm"}, ...]
    */
   var seqDiv = document.getElementById('sequence0');
-  seqDiv.focus();
-
+  //seqDiv.focus();
   var locatorDiv = document.getElementById('locatorDiv');
   var locatorBox = document.getElementById('locatorBox');
+
   var seqDivWidth = seqDiv.offsetWidth-4;
-  var zoomBox = document.getElementsByClassName('sequenceZoomDiv')[0];
+  var zoomDiv = document.getElementById('zoomDiv');
   var seqSelDiv = document.getElementById('selectDisplay');
   var seqSelRangeDiv = document.getElementById('selectDisplayRange');
   var seqSelDetDiv = document.getElementById('selectDisplayDetails');
@@ -27,7 +27,7 @@ $( function() {
   ];
 
   var eltWidth;
-
+  var zoomPress = false;
 /*
 * Make modular/general w/ API - think about init. (*list* of vals (not necessarily res #'s))
 */
@@ -65,15 +65,24 @@ $( function() {
       seqDiv.appendChild(newDivider);
     }
   }
+  //spawn locatordiv right after sequence spans
+  // var newLocatorDiv = document.createElement('div');
+  // newLocatorDiv.id = 'locatorDiv';
+  // var newLocatorBox = document.createElement('div');
+  // newLocatorBox.id = 'locatorBox';
+  // //var locatorDiv = document.getElementById('locatorDiv');
+  // //var locatorBox = document.getElementById('locatorBox');
+  // newLocatorDiv.appendChild(newLocatorBox);
+  // seqDiv.appendChild(newLocatorDiv);
   eltWidth = document.getElementsByClassName('bob')[0].getBoundingClientRect().width;
   //console.log(eltWidth);
-  //console.log(arrObjGlobal);
+  console.log(arrObjGlobal);
   //console.log(Object.keys(arrObjGlobal));
 
 //initiate ds variable
   var ds = new DragSelect({
   selectables: document.getElementsByClassName('bob'),
-  area: document.getElementById('sequence0'),
+  area: document.getElementById('sequenceContainer'),
   multiSelectKeys: ['ctrlKey'],
   onDragMove: function(e){
     var selection = ds.getSelection();
@@ -349,7 +358,8 @@ seqDiv.addEventListener('mousemove', function(e){
   //highlightBox_x2 = barMarker.style.left;
   //console.log(highlightBox_x2);
   //drawHighlightBox();
-  displayLocator(getEltByWidth(e.pageX-8));
+  //locatorBox.style.left = e.pageX-8 + 'px';
+  displayLocator(getIndexByWidth(e.pageX-8));
 
 });
 seqDiv.addEventListener('mouseleave',function(e){
@@ -362,9 +372,27 @@ seqDiv.addEventListener('click',function(e){
     //console.log('we here');
   }
 });
-seqDiv.addEventListener('keydown',function(e){
+
+//make keypress event general (only open if there exists a value to be zoomed in on)
+document.addEventListener('keydown',function(e){
   if(e.shiftKey){
+    zoomPress = true;
     console.log('we here');
+    if(locatorDiv.style.display == 'block'){
+
+      var info = Object.keys(arrObjGlobal[parseInt(locatorBox.innerText)])[0];
+
+    }
+
+  }
+
+});
+//can't listen to just
+document.addEventListener('keyup',function(e){
+  if(zoomPress){
+
+    console.log('we out');
+    zoomPress = false;
   }
 
 });
@@ -372,9 +400,32 @@ seqDiv.addEventListener('keydown',function(e){
     locatorDiv.style.display='block';
     locatorBox.innerText=loc;
   }
-  function getEltByWidth(x){
-    var delta = Math.ceil(x/eltWidth);
-    return delta;
+  function getIndexByWidth(x){
+    return Math.ceil(x/eltWidth);
+  }
+  function populateZoomDiv(val){
+    for(var i = 0; i<21;i++){
+      var resZoom = document.createElement('span');
+      resZoom.className = 'bob';
+      //var resZoomID = arr[resIndex];
+      //resZoom.innerText = arr[resIndex];
+      //resZoom.style.transform = 'scale(2)';
+      resZoom.style.height = '30px';
+      resZoom.style.width = '30px';
+      resZoom.style.fontSize = '14px';
+      resZoom.style.margin = '5px';
+      resZoom.style.border = '1px solid black';
+      // resZoom.style.lineHeight = '30px';
+      //resZoom.style.top = '30%';
+      zoomDiv.appendChild(resZoom);
+      if(i==10){
+        //create zoomed-on elt
+      }
+      else{
+
+      }
+
+    }
   }
 
   //ds.addSelection(document.getElementById(arrObjGlobal[3][1].id))
@@ -475,7 +526,7 @@ window.onload=function(){
 
   }
   //add event listener for when the user selects a file
-  //document.getElementById('files').addEventListener('change', handleFileSelect, false);
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
   //do something with data
 
   //other stuff

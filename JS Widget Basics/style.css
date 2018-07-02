@@ -67,25 +67,27 @@
   position:relative;
   border:2px solid black;
 }
-.sequenceZoomDiv{
+.sequenceSelInfoDiv{
   /* display: none; */
-  display
   height:75px;
   border: 2px solid black;
   text-align: center;
 }
 #locatorDiv{
+  top:50px;
+  left:10px;
   position:absolute;
-  top:15px;
   /*left: VARIABLE
   width: VARIABLE*/
-  height:60px;
+  /* height:60px; */
   z-index: 5;
   -webkit-box-sizing: border-box;
-  display: none;
+  display: block;
 }
 #locatorBox{
+  border: 2px solid blue;
   display: inline-block;
+  position:absolute;
 }
 /*cover hover effect*/
 .locatorDiv:hover{
