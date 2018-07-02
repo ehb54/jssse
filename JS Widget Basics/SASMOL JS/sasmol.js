@@ -58,10 +58,87 @@ SasMol.getOrigIndex = function(){
   return this.data.original_index;
 }
 //name
-SasMol.index = function(name){
+SasMol.name = function(name){
   this.data.name = name;
 }
 SasMol.getName = function(){
   return this.data.name;
+}
+//loc
+SasMol.loc = function(loc){
+  this.data.loc = loc;
+}
+SasMol.getLoc = function(){
+  return this.data.loc;
+}
+//resname
+SasMol.resname = function(resname){
+  this.data.resname = resname;
+}
+SasMol.getResname = function(){
+  return this.data.resname;
+}
+//chain
+SasMol.chain = function(chain){
+  this.data.chain = chain;
+}
+SasMol.getChain = function(){
+  return this.data.chain;
+}
+//res seq
+SasMol.resID = function(id){
+  this.data.resid = id;
+}
+SasMol.getResID = function(){
+  return this.data.resid;
+}
+//rescode
+SasMol.rescode = function(rescode){
+  this.data.rescode = rescode;
+}
+SasMol.getRescode = function(){
+  return this.data.resid;
+}
+//coor
+SasMol.coor = function(coor){
+  this.data.coor = coor;
+}
+SasMol.getCoor = function(){
+  return this.data.coor;
+}
+//occupancy
+SasMol.occupancy = function(occ){
+  this.data.occupancy = occ;
+}
+SasMol.getOccupancy = function(){
+  return this.data.occupancy;
+}
+//beta
+SasMol.beta = function(beta){
+  this.data.beta = beta;
+}
+SasMol.getBeta = function(){
+  return this.data.getBeta;
+}
+//elt symbol
+SasMol.elt = function(elt){
+  this.data.element = elt;
+}
+SasMol.getElt = function(){
+  return this.data.element;
+}
+//charge
+SasMol.charge = function(charge){
+  this.data.charge = charge;
+}
+SasMol.getCharge = function(){
+  return this.data.charge;
+}
+//segname
+SasMol.segname = function(segname){
+  this.data.segname = segname;
+}
+SasMol.getSegname = function(){
+  return this.data.segname;
 }
 module.exports =  {SasMol};
