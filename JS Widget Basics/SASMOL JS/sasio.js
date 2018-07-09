@@ -1,3 +1,10 @@
+/**
+ *  @fileOverview Basic I/O for reading/writing PDB files
+ *
+ *  @requires     NPM:numjs
+ *  @requires     NPM:sprintf-js
+ *  @requires     NPM:readline
+ */
 //dependencies
 var sasmol = require('./sasmol.js');
 //import numJS (like numpy)
@@ -9,7 +16,12 @@ var sprintf = require("sprintf-js").sprintf,
 var fs = require('fs');
 var readline = require('readline');
 
-
+/**
+ * Reads PDB Asynchronously
+ * @param   {string} filename    local file name (in same directory)
+ *
+ * @returns {string} full file as string
+ */
 sasmol.SasMol.readPDB = function(filename){
 //'use strict';
   //Sasmol load properties and local variables:
@@ -170,6 +182,12 @@ sasmol.SasMol.readPDB = function(filename){
   });
 }//end of readpdb
 
+/**
+ * Reads PDB synchronously
+ * @param   {string} filename    local file name (in same directory)
+ *
+ * @returns {string} full file as string
+ */
 sasmol.SasMol.readPDBSync = function(filename){
   var linesArr = fs.readFileSync(filename, 'utf-8').split('\n').filter(Boolean);
   var linesArrLen = linesArr.length;
@@ -295,10 +313,11 @@ sasmol.SasMol.readPDBSync = function(filename){
   return fileStr;
 }
 
-
-
-
-
+/**
+ * writes PDB Asynchronously
+ *
+ * @returns {string} full file as string
+ */
 //return string instead of console logging
 sasmol.SasMol.writePDB = function(){
   var numAtoms = this.data.atom.length;
@@ -324,7 +343,11 @@ sasmol.SasMol.writePDB = function(){
   //console.log(fileStr);
   return fileStr;
 }
-
+/**
+ * writes PDB Asynchronously
+ *
+ * @returns {string} full file as string
+ */
 sasmol.SasMol.writePDBSync = function(){
   var numAtoms = this.data.atom.length;
   var fileStr = "";
