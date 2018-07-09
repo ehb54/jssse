@@ -14,6 +14,7 @@ var SasMol = {
         resid:[] ,  //residue seq number 23-26
         rescode:[], //icode
         coor: [],//xyz
+        coorObj:{},
         occupancy:[] ,  //occupancy
         beta:[] , //temp factor
         segname:[] ,  //segname
@@ -97,7 +98,7 @@ SasMol.rescode = function(rescode){
   this.data.rescode = rescode;
 }
 SasMol.getRescode = function(){
-  return this.data.resid;
+  return this.data.rescode;
 }
 //coor
 SasMol.coor = function(coor){
@@ -105,6 +106,12 @@ SasMol.coor = function(coor){
 }
 SasMol.getCoor = function(){
   return this.data.coor;
+}
+SasMol.coorObj = function(coor){
+  this.data.coorObj = coor;
+}
+SasMol.getCoorObj = function(){
+  return this.data.coorObj;
 }
 //occupancy
 SasMol.occupancy = function(occ){
@@ -118,7 +125,7 @@ SasMol.beta = function(beta){
   this.data.beta = beta;
 }
 SasMol.getBeta = function(){
-  return this.data.getBeta;
+  return this.data.beta;
 }
 //elt symbol
 SasMol.elt = function(elt){
