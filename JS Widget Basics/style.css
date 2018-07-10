@@ -40,7 +40,7 @@
     opacity: 0.5;
 } */
 * { user-select: none; }
-.res{
+/* .res{
 
   z-index:-1;
   width:15px;
@@ -49,9 +49,9 @@
   position:relative;
   top:40%;
   margin:0px 2px;
-  /* padding-left:5px;
-  padding-right:5px; */
-  /* pointer-events: none; */
+  padding-left:5px;
+  padding-right:5px;
+  pointer-events: none;
   border: 1px solid black;
   font-family: Consolas, monaco, monospace;
   text-align:center;
@@ -60,12 +60,20 @@
 
   background-color: lightblue;
   font-size: 8px;
-}
+} */
 /*new stuff*/
 .sequenceDiv{
   height:75px;
   position:relative;
   border:2px solid black;
+}
+#zoomDiv{
+  height:75px;
+  display: none;
+  border: 2px solid black;
+  margin-top: 5px;
+  margin-bottom: 5px
+
 }
 .sequenceSelInfoDiv{
   /* display: none; */
@@ -156,7 +164,7 @@
 .ds-selected {
   /* outline: 2px solid black; */
   /* outline-offset: 1px; */
-  color: black;
+  color: white;
   /* font-weight: bold; */
   background-color: black;
 }
@@ -168,15 +176,16 @@
   pointer-events: none;
   height: 30px;
   left: 112px;
-  top: 22px;
+  top: 0px;
   width: 0px;
+  height:100%;
 }
 .subarray{
   margin:10px;
   border:1px solid black;
 }
 /*placeholder element (instead of residue)*/
-.bob{
+.res{
   display:inline-block;
    /* width:1px; */
    height:10px;
