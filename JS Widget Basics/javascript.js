@@ -4,9 +4,9 @@ window.addEventListener('contextmenu', function (e) { // Not compatible with IE 
 }, false);
 //shorthand for $(document).ready(function(){ //CODE})
 $( function() {
-
+  $('#sequenceContainer').dialog();
   //JSSE OBJECT should provide # of residues, array of objects in such format
-  var num = 200;
+  var num = 100;
   /**
    * @example
    GLOBAL OBJECT Array definition
@@ -25,6 +25,7 @@ $( function() {
   var seqSelRangeDiv = document.getElementById('selectDisplayRange');
   var seqSelDetDiv = document.getElementById('selectDisplayDetails');
   var arrObjGlobal = [];
+  var zoomArr = [];
   //var arrObjGlobal = {};
   var type = 'res';
   var arrDisp = [];
@@ -66,7 +67,14 @@ $( function() {
       //console.log(i);
       //rudimentary calculation
       newDivider.style.left = (seqDivWidth/num)*i + 'px';
-      newDivider.style.fontSize = '14px';
+      newDivider.style.fontSize = '12px';
+      var textNode = document.createTextNode(i);
+      newDivider.appendChild(textNode);
+      seqDiv.appendChild(newDivider);
+    }
+    else if(i%100==0 && i!= 0 && num <=2000){
+      newDivider.style.left = (seqDivWidth/num)*i + 'px';
+      newDivider.style.fontSize = '12px';
       var textNode = document.createTextNode(i);
       newDivider.appendChild(textNode);
       seqDiv.appendChild(newDivider);
@@ -103,11 +111,8 @@ $( function() {
       //console.log(matchedKey);
       updateCurrSelection(matchedKey, type, 'endIndex', 'update');
     }
-    //arrUpdate(selection);
-    //console.log(lastElt);
   },
   onDragStart: function(e){
-    //console.log(e.target.parentNode);
     var selection = ds.getSelection();
     //console.log(selection);
     //var firstElt = selection[0].id;
@@ -116,8 +121,6 @@ $( function() {
       var lastElt = selection[selection.length-1].id;
       //console.log(lastElt);
       var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
-
-      //console.log(matchedKey);
       updateCurrSelection(matchedKey, type, 'startIndex', 'update');
     }
 
@@ -180,10 +183,42 @@ $( function() {
 var zoomds = new DragSelect({
   multiSelectKeys: ['ctrlKey'],
   area:zoomDiv,
+  onDragMove: function(e){
+    var selection = zoomds.getSelection();
+
+    //only do computations if there selection array isn't empty
+    if(selection.length>0){
+      //SUBJECT TO CHANGE
+      var regex = /(.{10})/;
+      //equivID = regex.exec(item.id)[1];
+      var lastElt = regex.exec(selection[selection.length-1].id)[1];
+
+      var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
+
+      //console.log(matchedKey);
+      updateCurrSelection(matchedKey, type, 'endIndex', 'update');
+    }
+  },
+  onDragStart: function(e){
+    var selection = zoomds.getSelection();
+    //console.log(selection);
+    //var firstElt = selection[0].id;
+    //only do computations if there selection array isn't empty
+    if(selection.length>0){
+      var regex = /(.{10})/;
+      var lastElt = regex.exec(selection[selection.length-1].id)[1];
+      //console.log(lastElt);
+      var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
+      updateCurrSelection(matchedKey, type, 'startIndex', 'update');
+    }
+
+
+  },
   onElementSelect: function(item){
     mirror(item,'select');
   },
   onElementUnselect: function(item){
+    //console.log(item);
     mirror(item,"unselect");
   },
   callback: function(){
@@ -204,24 +239,23 @@ var zoomds = new DragSelect({
 function mirror(item,type){
   var zoomSel = zoomds.getSelection();
   var mainSel = ds.getSelection();
-  //console.log(item.parentNode);
-  var equivID = item.id;
-  //console.log(item);
-  if(item.parentNode.id == 'zoomDiv'){
-    var regex = /(.{10})/;
-    equivID = regex.exec(item.id)[1];
-  }
+
+  //SUBJECT TO CHANGE (depends on ID)
+  var regex = /(.{10})/;
+  equivID = regex.exec(item.id)[1];
 
 
   if(type == "unselect"){
+    //console.log('UNSELECTED');
+    //console.log(item);
     ds.removeSelection(document.getElementById(equivID));
-    if(document.getElementById('zoomDiv').childNodes != null){
+    if(document.getElementById('zoomDiv').childNodes.length > 2){
       zoomds.removeSelection(document.getElementById(equivID+'zoomed'));
     }
   }
   else if(type =="select"){
     ds.addSelection(document.getElementById(equivID));
-    if(document.getElementById('zoomDiv').childNodes != null){
+    if(document.getElementById('zoomDiv').childNodes.length > 2){
       zoomds.addSelection(document.getElementById(equivID+'zoomed'));
     }
   }
@@ -423,11 +457,7 @@ seqDiv.addEventListener('mousemove', function(e){
   //console.log('mousein '+e.clientX);
   barMarker.style.display = 'block';
   barMarker.style.left = (e.pageX-8)+'px';
-  //console.log(parseInt(barMarker.style.left) - seqDiv.offsetLeft + 10);
-  //highlightBox_x2 = barMarker.style.left;
-  //console.log(highlightBox_x2);
-  //drawHighlightBox();
-  //locatorBox.style.left = e.pageX-8 + 'px';
+  locatorBox.style.display = 'inline-block';
   displayLocator(getIndexByWidth(e.pageX-8));
 
 });
@@ -450,11 +480,15 @@ document.addEventListener('keydown',function(e){
     zoomPress = true;
     //console.log('we here');
     zoomDiv.style.display = 'block';
-    var info = Object.keys(arrObjGlobal[parseInt(locatorBox.innerText)])[0];
+    if(parseInt(locatorBox.innerText) < arrObjGlobal.length){
+
+      var info = Object.keys(arrObjGlobal[parseInt(locatorBox.innerText)])[0];
+      populateZoomDiv(info);
+    }
     //console.log(info);
 
     //console.log(resname + ' ' + resid);
-    populateZoomDiv(info)
+
   }
 
 
@@ -462,7 +496,13 @@ document.addEventListener('keydown',function(e){
 //can't just listen to keyup
 document.addEventListener('keyup',function(e){
   if(zoomPress){
-    //clearAllSelection();
+    //remove 'zoomed' class from primary seq
+    for(var i = 0; i < zoomArr.length; i++){
+      //document.getElementById(zoomArr[i]).classList.remove('zoomed-middle');
+      document.getElementById(zoomArr[i]).classList.remove('zoomed-lefthook');
+      document.getElementById(zoomArr[i]).classList.remove('zoomed-righthook');
+    }
+    zoomArr = [];
     //console.log('we out');
     zoomDiv.style.display = 'none';
     zoomPress = false;
@@ -481,25 +521,26 @@ document.addEventListener('keyup',function(e){
     while(zoomDiv.children.length>1){
       zoomDiv.removeChild(zoomDiv.lastChild);
     }
-
-
+    var zoomRangeLeft;
+    var zoomRangeWidth;
+    //SUBJECT TO CHANGE
     var reg = /(\w{3})(\d+)/;
     var resname = reg.exec(val)[1];
     var resid = parseInt(reg.exec(val)[2]);
 
-
+    // MAKE MODULAR
     var lorange = resid - 6;
-    var hirange;
     if(resid <= 5){
       lorange = 0;
     }
-    hirange = resid + 5;
+    var hirange = resid + 5;
+    if(hirange > arrObjGlobal.length){
+      hirange = arrObjGlobal.length;
+    }
     for(var i = lorange; i<hirange;i++){
       var resZoom = document.createElement('span');
       resZoom.className = 'res';
-
       var info  = Object.keys(arrObjGlobal[i])[0];
-      //console.log();
       resname = reg.exec(info)[1];
       resid = parseInt(reg.exec(info)[2]);
       resZoom.innerText = resname + '\n' + resid;
@@ -520,119 +561,40 @@ document.addEventListener('keyup',function(e){
       if(mirrorItem.className.includes('ds-selected')){
         mirror(mirrorItem,"select");
       }
-      //console.log(document.getElementById(id).className);
-
+      if(i==lorange){
+        mirrorItem.classList.add('zoomed-lefthook');
+        zoomRangeLeft = mirrorItem.offsetLeft;
+        // console.log(mirrorItem);
+        // console.log(zoomRangeLeft);
+      }
+      else if(i==hirange-1){
+        mirrorItem.classList.add('zoomed-righthook');
+      }
+      else{
+        //mirrorItem.classList.add('zoomed-middle');
+      }
+      //add to zoom arr
+      zoomArr.push(id);
 
 
     }
+    // //create visual range in primary seq div
+    // var zoomRange = document.createElement('div');
+    // zoomRange.classList.add('res');
+    // zoomRange.style.display = 'inline-block';
+    // zoomRange.style.zIndex = '-1';
+    // zoomRange.style.float = 'left';
+    // zoomRange.position = 'absolute';
+    // zoomRange.offsetLeft = zoomRangeLeft;
+    // zoomRange.style.width = zoomRangeLeft + (hirange - lorange)*eltWidth+'px';
+    // console.log(zoomRange.style.width);
+    // zoomRange.style.outline = '2px solid red';
+    //
+    // seqDiv.appendChild(zoomRange);
+    // console.log(zoomRange);
   }
 
 
   //ds.addSelection(document.getElementById(arrObjGlobal[3][1].id))
+
 } );//end of jQuery.ready()
-
-//JSPDB object definition
-  var jspdb = {
-    create: function(id, options){
-      var newObj={};
-      newObj.id = id;
-      newObj.options = options;
-      return newObj;
-    },
-    //take in object as parameter
-    listen: function(obj){
-      if(typeof(obj)==='object'){
-        var wid;
-        if(obj.id != null && (wid = document.getElementById(obj.id))){
-          wid.addEventListener('click', function(){
-            console.log('element id: '+obj.id);
-          });
-        }
-      }
-    },
-    load: function(obj, data, cb){
-      //1. Parse/match file reference
-      var type = /^([a-zA-z]){4,5}:\/\//;
-      var res = type.exec(data);
-      //console.log(res);
-      //assume local data?
-      if(res==null){
-        obj.data = data;
-        console.log(obj);
-      }
-      //check address type (file vs https)
-      else if(res[0]==='https://'){
-        //retrieve file from pdb database
-        $.get(data, function(info){
-          //do something with info (assign to data property)
-          obj.data = info;
-          //console.log(info);
-        })
-        .fail(function(err){
-          console.log('error occured!');
-      });
-    }
-  },
-  out: function(obj,options){
-    if(options.format==='pdb'){
-      //call fn/script to parse obj.data to pdb
-    }
-    //handle other formats
-  },
-  update: function(obj, options, cb){
-    //update options properties
-  }
-};
-
-
-/*  make sure DOM is properly loaded before manipulating (changing div into
- *  dialog, adding eventlisteners)
-*/
-window.onload=function(){
-
-  //make div a jQuery UI dialog Box (maybe in jspdb object definition?)
-  $('#test1').dialog().css('background-color','blue');
-  $('#div2').dialog().css('background-color', 'red');
-
-  //$('#mainseqdiv').dialog();
-  //create objects (debugging purposes - can view obj1, obj2 properties in console)
-    var obj1 = jspdb.create('test1',{readonly:'true'});
-    var obj2 = jspdb.create('div2',{fileformat:'pdb'});
-
-    //logging objects
-      // console.log('obj1: ' + JSON.stringify(obj1));
-      // console.dir(obj1);
-      // console.dir(obj2);
-
-  //add event listeners
-  jspdb.listen(obj1);
-  jspdb.listen(obj2);
-
-  //handling local files
-  function handleFileSelect(e) {
-    var files = e.target.files; // FileList object (list of File objects)
-    var file = files[0];
-    var reader = new FileReader();
-    reader.onload = function (evt){
-      //grabs info
-      var info = evt.target.result;
-      //create jspdb object
-      var obj3 = jspdb.create('fakediv',{});
-      console.log(info);
-      jspdb.load(obj3, info, function(err){if(err){throw err;}});
-    }
-    reader.readAsText(file);
-
-
-  }
-  //add event listener for when the user selects a file
-  // document.getElementById('files').addEventListener('change', handleFileSelect, false);
-  //do something with data
-
-  //other stuff
-  jspdb.load(obj1, 'https://files.rcsb.org/view/5W4C.pdb', function(err){
-    if(err){throw err;}
-    console.log('success');
-  });
-
-}

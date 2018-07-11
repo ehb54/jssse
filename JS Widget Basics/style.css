@@ -63,16 +63,17 @@
 } */
 /*new stuff*/
 .sequenceDiv{
-  height:75px;
+  height:50px;
   position:relative;
   border:2px solid black;
 }
 #zoomDiv{
-  height:75px;
+  height:50px;
   display: none;
   border: 2px solid black;
   margin-top: 5px;
-  margin-bottom: 5px
+  margin-bottom: 5px;
+  text-align: center;
 
 }
 .sequenceSelInfoDiv{
@@ -80,9 +81,10 @@
   height:75px;
   border: 2px solid black;
   text-align: center;
+  font-size: 12px;
 }
 #locatorDiv{
-  top:50px;
+  top:20%;
   left:10px;
   position:absolute;
   /*left: VARIABLE
@@ -94,7 +96,7 @@
 }
 #locatorBox{
   border: 2px solid blue;
-  display: inline-block;
+  display: none;
   position:absolute;
 }
 /*cover hover effect*/
@@ -134,7 +136,7 @@
   border-color: lightgray;
   top:0px;
   width:0px;
-  height:75px;
+  height:100%;
   display:none;
   float:left;
   /*display:block(while inside), none ouside div;
@@ -150,15 +152,15 @@
   width:9px;
   background-color:blue;
 }
-.right{
-  right:0px;
-  cursor: e-resize;
-  display:none;
+.zoomed-middle{
+  box-shadow:0px 2px 0px 0px red;
+  box-shadow:0px -2px 0px 0px red;
 }
-.left{
-  left:0px;
-  cursor: w-resize;
-  display:none;
+.zoomed-lefthook{
+  box-shadow: -2px 0px 0px 0px red;
+}
+.zoomed-righthook{
+  box-shadow: 2px 0px 0px 0px red;
 }
 /*with dragselectJS*/
 .ds-selected {
@@ -168,13 +170,20 @@
   /* font-weight: bold; */
   background-color: black;
 }
+.zoomds-selected {
+  outline: 2px solid black;
+  outline-offset: 1px;
+  font-weight: bold;
+  background-color: transparent;
+  color:black;
+}
 #customSelector{
   position: absolute;
   background: rgba(0, 0, 255, 0.1);
   border: 1px solid rgba(0, 0, 255, 0.45);
   display: none;
   pointer-events: none;
-  height: 30px;
+  /* height: 30px; */
   left: 112px;
   top: 0px;
   width: 0px;
@@ -189,11 +198,12 @@
   display:inline-block;
    /* width:1px; */
    height:10px;
+   text-align: center;
 }
 .divider{
     position:absolute;
     /* left:50%; */
     top:30%;
-    bottom:30%;
+    bottom:20%;
     border-left:1px solid black;
 }

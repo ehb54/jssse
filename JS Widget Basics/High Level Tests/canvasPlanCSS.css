@@ -1,0 +1,40 @@
+/* .draggable {
+  width: 90px;
+  height: 80px;
+  padding: 5px;
+  float: left;
+  margin: 0 10px 10px 0;
+  font-size: .9em;
+} */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+.ui-widget-header p, .ui-widget-content p {
+  margin: 0;
+}
+#board{
+  outline: 2px solid black;
+  height: 400px;
+  width: 800px;
+}
+
+.SSE{
+  position: relative;
+  padding:5px;
+  height:50%;
+  width:25%;
+  float:left;
+  outline: 1px solid black;
+}
+#build-canvas{
+  position: relative;
+  height:50%;
+  width:100%;
+  float:left;
+    outline: 1px solid black;
+}
+h2{
+  background-color:lightgray;
+}
