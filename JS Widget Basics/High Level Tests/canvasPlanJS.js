@@ -19,6 +19,7 @@ $( function() {
     // ,snap: '.ui-widget-header'
   });
 
+  //UNCOMMENT THESE TWO LINES TO PLAY AROUND WITH DIALOGS (position not inherently fixed - they are spawned on top)
   // $('.SSE').dialog();
   // $('#build-canvas').dialog();
 });
