@@ -1,11 +1,6 @@
-/* .draggable {
-  width: 90px;
-  height: 80px;
-  padding: 5px;
-  float: left;
-  margin: 0 10px 10px 0;
-  font-size: .9em;
-} */
+
+/*  CANVAS PLAN WITH JQUERY DRAGGABLE ELT'S + VANILLA CSS (no grid)*/
+/*
 *,
 *:before,
 *:after {
@@ -34,6 +29,49 @@
   width:100%;
   float:left;
     outline: 1px solid black;
+}
+h2{
+  background-color:lightgray;
+}
+*/
+
+/*  CANVAS PLAN WITH CSS GRID */
+.grid-container {
+  display: grid;
+  /* grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto; */
+  grid-gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+  height:400px;
+  grid-template-areas:
+    'PDB_viewer SSE1 SSE2'
+    'builder-canvas builder-canvas builder-canvas';
+}
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
+#builder-canvas {
+  grid-area: builder-canvas;
+  /* grid-row-start: 1;
+  grid-row-end: 3; */
+  /* grid-column-start: 1;
+  grid-column-end: 4; */
+}
+/* .SSE-area{
+  grid-area: SSE-area;
+} */
+.PDB_viewer{
+  grid-area: PDB_viewer;
+}
+#SSE1{
+  grid-area:SSE1;
+}
+#SSE2{
+  grid-area: SSE2;
 }
 h2{
   background-color:lightgray;
