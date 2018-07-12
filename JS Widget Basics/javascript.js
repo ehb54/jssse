@@ -4,7 +4,11 @@ window.addEventListener('contextmenu', function (e) { // Not compatible with IE 
 }, false);
 //shorthand for $(document).ready(function(){ //CODE})
 $( function() {
-  $('#sequenceContainer').dialog();
+  $('#sequenceContainer').dialog({
+    title: 'JSSSE WIDGET',
+    height: 300,
+    width:500
+  });
   //JSSE OBJECT should provide # of residues, array of objects in such format
   var num = 100;
   /**
@@ -19,7 +23,7 @@ $( function() {
   var locatorDiv = document.getElementById('locatorDiv');
   var locatorBox = document.getElementById('locatorBox');
   //subtract pixels from border
-  var seqDivWidth = seqDiv.offsetWidth-4;
+  var seqDivWidth;
   var zoomDiv = document.getElementById('zoomDiv');
   var seqSelDiv = document.getElementById('selectDisplay');
   var seqSelRangeDiv = document.getElementById('selectDisplayRange');
@@ -38,61 +42,56 @@ $( function() {
 /*
 * Make modular/general w/ API - think about init. (*list* of vals (not necessarily res #'s))
 */
-  //initialize span elements
-  for(var i=1;i<num;i++){
-    var newSpan = document.createElement('span');
-    newSpan.className = 'res';
-    newSpan.style.width = (seqDivWidth/num) + 'px';
-    //assign text temporarily
-    //var val = document.createTextNode(i);
-    //newSpan.appendChild(val);
-    newSpan.id = '_' + Math.random().toString(36).substr(2, 9);
-    //newSpan.id = i;
-    seqDiv.appendChild(newSpan);
+  function initialize(){
+    //update calculation
+    seqDivWidth = seqDiv.offsetWidth-4;
+    //initialize span elements
+    for(var i=1;i<num;i++){
+      var newSpan = document.createElement('span');
+      newSpan.className = 'res';
+      newSpan.style.width = (seqDivWidth/num) + 'px';
+      //assign text temporarily
+      //var val = document.createTextNode(i);
+      //newSpan.appendChild(val);
+      newSpan.id = '_' + Math.random().toString(36).substr(2, 9);
+      //newSpan.id = i;
+      seqDiv.appendChild(newSpan);
 
-    //assuming res id's unique, make keys ordered and sorted to make later arithmetic easier (parse obj for string instead of res)
+      //assuming res id's unique, make keys ordered and sorted to make later arithmetic easier (parse obj for string instead of res)
 
-    var key = aminoAcidArr[Math.floor(Math.random() * Math.floor(aminoAcidArr.length-1))]+i;
-    //var key = 'res'+i;
-    //console.log();
-    var obj = {};
-    obj[key] = newSpan.id;
-    arrObjGlobal.push(obj);
-    //arrObjGlobal[key]=newSpan.id;
-    //insert dividers
-    var newDivider = document.createElement('div');
-    newDivider.className = 'divider';
+      var key = aminoAcidArr[Math.floor(Math.random() * Math.floor(aminoAcidArr.length-1))]+i;
+      //var key = 'res'+i;
+      var obj = {};
+      obj[key] = newSpan.id;
+      arrObjGlobal.push(obj);
+      //arrObjGlobal[key]=newSpan.id;
+      //insert dividers
+      var newDivider = document.createElement('div');
+      newDivider.className = 'divider';
 
-    if(i%10==0 && i!= 0 && num <= 200){
-      //console.log(i);
-      //rudimentary calculation
-      newDivider.style.left = (seqDivWidth/num)*i + 'px';
-      newDivider.style.fontSize = '12px';
-      var textNode = document.createTextNode(i);
-      newDivider.appendChild(textNode);
-      seqDiv.appendChild(newDivider);
+      if(i%10==0 && i!= 0 && num <= 200){
+        //console.log(i);
+        //rudimentary calculation
+        newDivider.style.left = (seqDivWidth/num)*i + 'px';
+        newDivider.style.fontSize = '12px';
+        var textNode = document.createTextNode(i);
+        newDivider.appendChild(textNode);
+        seqDiv.appendChild(newDivider);
+      }
+      else if(i%100==0 && i!= 0 && num <=2000){
+        newDivider.style.left = (seqDivWidth/num)*i + 'px';
+        newDivider.style.fontSize = '12px';
+        var textNode = document.createTextNode(i);
+        newDivider.appendChild(textNode);
+        seqDiv.appendChild(newDivider);
+      }
     }
-    else if(i%100==0 && i!= 0 && num <=2000){
-      newDivider.style.left = (seqDivWidth/num)*i + 'px';
-      newDivider.style.fontSize = '12px';
-      var textNode = document.createTextNode(i);
-      newDivider.appendChild(textNode);
-      seqDiv.appendChild(newDivider);
-    }
+    //update elt width after new calculations
+      eltWidth = document.getElementsByClassName('res')[0].getBoundingClientRect().width;
   }
-  //spawn locatordiv right after sequence spans
-  // var newLocatorDiv = document.createElement('div');
-  // newLocatorDiv.id = 'locatorDiv';
-  // var newLocatorBox = document.createElement('div');
-  // newLocatorBox.id = 'locatorBox';
-  // //var locatorDiv = document.getElementById('locatorDiv');
-  // //var locatorBox = document.getElementById('locatorBox');
-  // newLocatorDiv.appendChild(newLocatorBox);
-  // seqDiv.appendChild(newLocatorDiv);
-  eltWidth = document.getElementsByClassName('res')[0].getBoundingClientRect().width;
-  //console.log(eltWidth);
-  //console.log(arrObjGlobal);
-  //console.log(Object.keys(arrObjGlobal));
+  initialize();
+
+  // eltWidth = document.getElementsByClassName('res')[0].getBoundingClientRect().width;
 
 //initiate ds variable
   var ds = new DragSelect({
@@ -101,7 +100,6 @@ $( function() {
   multiSelectKeys: ['ctrlKey'],
   onDragMove: function(e){
     var selection = ds.getSelection();
-
     //only do computations if there selection array isn't empty
     if(selection.length>0){
       var lastElt = selection[selection.length-1].id;
@@ -235,6 +233,26 @@ var zoomds = new DragSelect({
   //,selectables: document.getElementsByClassName('res')
 });
 
+
+
+
+//JQUERY STUFF
+$('#sequenceContainer').on( 'dialogresizestop',
+  function(event,ui){
+    $('.res').remove();
+    $('.divider').remove();
+    //console.log('resized');
+
+    arrObjGlobal = [];
+    initialize();
+    // ds.stop();
+    // ds.start();
+    ds.addSelectables(document.getElementsByClassName('res'));
+    zoomds.start();
+  }
+);
+
+// HELPER FUNCTIONS
 //helper function for mirroring selection/unselection between primary sequence div and zoom div
 function mirror(item,type){
   var zoomSel = zoomds.getSelection();
@@ -454,11 +472,12 @@ var barMarker = document.getElementById('marker');
 //add marker to follow mouse in div
 seqDiv.addEventListener('mousemove', function(e){
   seqDivFlag = true;
-  //console.log('mousein '+e.clientX);
+  var seqDivPosition = getPosition(seqDiv);
+  //console.log('mousein '+ (e.pageX - seqDivPosition.x));
   barMarker.style.display = 'block';
-  barMarker.style.left = (e.pageX-8)+'px';
+  barMarker.style.left = (e.pageX - seqDivPosition.x)+'px';
   locatorBox.style.display = 'inline-block';
-  displayLocator(getIndexByWidth(e.pageX-8));
+  displayLocator(getIndexByWidth(e.pageX - seqDivPosition.x));
 
 });
 var seqDivFlag = false;
@@ -558,6 +577,7 @@ document.addEventListener('keyup',function(e){
 
       //mirror because spawning these new spans are called after selection in primary seq div
       var mirrorItem = document.getElementById(id);
+      // console.log(id);
       if(mirrorItem.className.includes('ds-selected')){
         mirror(mirrorItem,"select");
       }
@@ -593,6 +613,37 @@ document.addEventListener('keyup',function(e){
     // seqDiv.appendChild(zoomRange);
     // console.log(zoomRange);
   }
+
+/**
+  *Helper function to get an element's exact position (if nested in container divs)
+ * CREDIT: https://www.kirupa.com/html5/get_element_position_using_javascript.htm
+ */
+
+function getPosition(el) {
+  var xPos = 0;
+  var yPos = 0;
+
+  while (el) {
+    if (el.tagName == "BODY") {
+      // deal with browser quirks with body/window/document and page scroll
+      var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+      var yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+      xPos += (el.offsetLeft - xScroll + el.clientLeft);
+      yPos += (el.offsetTop - yScroll + el.clientTop);
+    } else {
+      // for all other non-BODY elements
+      xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+      yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+    }
+
+    el = el.offsetParent;
+  }
+  return {
+    x: xPos,
+    y: yPos
+  };
+}
 
 
   //ds.addSelection(document.getElementById(arrObjGlobal[3][1].id))
