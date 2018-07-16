@@ -11,18 +11,13 @@
 
       <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <link rel="stylesheet" href="canvasPlanCSS.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <script src="canvasPlanJS.js"></script>
 
 
 
   </head>
   <body>
-    <!--  Button to open dialog Code-->
-    <!-- <button id="opener">open the dialog</button>
-    <div id="dialog" title="Dialog Title">I'm a dialog</div> -->
-    <!-- <div id="snaptarget" class="ui-widget-header">
-      <p>Snap Target</p>
-  </div> -->
 
   <!--  CANVAS PLAN WITH JQUERY DRAGGABLE ELT'S + VANILLA CSS (no grid)-->
   <!--
@@ -51,15 +46,24 @@
 -->
     <!-- CANVAS PLAN WITH CSS GRID  -->
 
-    <div class="grid-container">
-      <div class="PDB_viewer">PDB Viewer</div>
-      <div class = "SSE sortable">
-        <div class = "ui-dialog-titlebar "></div>
-        <div class = 'handle'></div>
-        <h2>SOBJ 1</h2>
+    <div class="board">
+      <div class="PDB_viewer">
+        <div class = 'handle'>
+          <p>PDB Viewer</p>
+          <button class="btn close" ><i class="fa fa-close"></i></button>
+        </div>
       </div>
       <div class = "SSE sortable">
-        <h2>SOBJ 2</h2>
+        <div class = 'handle'>
+          <p>SOBJ1</p>
+          <button class="btn close" ><i class="fa fa-close"></i></button>
+        </div>
+      </div>
+      <div class = "SSE sortable">
+        <div class = 'handle'>
+          <p>SOBJ2</p>
+          <button class="btn close" ><i class="fa fa-close"></i></button>
+        </div>
       </div>
       <div id="builder-canvas">Build Canvas</div>
     </div>

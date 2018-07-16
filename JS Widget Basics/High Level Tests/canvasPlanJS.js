@@ -2,11 +2,6 @@
 
 
 $( function() {
-  //code to open dialog
-  // $( "#dialog" ).dialog({ autoOpen: false });
-  // $( "#opener" ).click(function() {
-  //   $( "#dialog" ).dialog( "open" );
-  // });
 
   //UNCOMMENT THESE TO ENABLE JQUERY (with CSS, the elements don't stick to grid-defined columns )
   // $('.SSE')
@@ -25,17 +20,42 @@ $( function() {
   // });
 
   //UNCOMMENT THESE TWO LINES TO PLAY AROUND WITH DIALOGS (position not inherently fixed - they are spawned on top)
-   $('.SSE').dialog();
+
   // $('#build-canvas').dialog();
-  $(".grid-container")
+  $(".board")
   .sortable({
     items: ".sortable",
     placeholder: 'SSE placeholder',
     forceHelperSize: true,
     tolerance:'pointer',
-    handle: 'h2',
-    scroll: false
+    handle: '.handle',
+    scroll: false,
+    cursor: 'move'
   });
+var closeButtons = document.getElementsByClassName('close');
+var board = document.getElementById('board');
+  closeButtons[0].addEventListener('click', function(e){
+    //close window
+    console.log(e.target);
+    //$('#closeButton').remove();
+  });
+
+ // $('.SSE').dialog(
+ //   {
+ //     autoOpen: false,
+ //    draggable: true,
+ //    // resizable: false,
+ //    height: 'auto',
+ //    width: 300,
+ //    modal: false,
+ //    open: function(event, ui) {
+ //        $(event.target).parent().css('position', 'fixed');
+ //        $(event.target).parent().css('top', '200px');
+ //        $(event.target).parent().css('left', '10px');
+ //    }
+ //   }
+ // );
+ // $('.SSE').dialog('open');
 
 
   // //use widget factory to create minimize state
