@@ -3,10 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script src = "sasio.js"></script>
+    <!-- <script data-main = "scripts/main" src = "scripts/require.js"></script> -->
+    <script src = "./drafts/bundle.js"></script>
   </head>
   <body>
-    <input type="file" id="files" name="files[]" multiple />
-
+    <!-- <input type="file" id="files" name="files[]" multiple /> -->
+    <label class="custom-file-upload" style="  border: 1px solid #ccc; display: inline-block; padding: 6px 12px; cursor: pointer;">
+      <input type="file" id="files" name="files[]" style="display:none;" multiple />
+      Select PDB Files
+  </label>
   </body>
 </html>

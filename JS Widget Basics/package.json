@@ -10,12 +10,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "browserify": {
+      "transform": [
+        "browserify-shim"
+      ]
+    },
+    "browserify-fs": "^1.0.0",
     "jquery-ui": "^1.12.1",
     "nodemon": "^1.17.5",
     "numjs": "^0.16.0",
+    "readline-browserify": "0.0.4",
     "sprintf-js": "^1.1.1"
   },
   "devDependencies": {
+    "browserify-shim": "^3.8.14",
     "dragselect": "^1.7.24"
   }
 }

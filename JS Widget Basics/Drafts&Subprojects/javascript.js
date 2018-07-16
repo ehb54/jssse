@@ -39,6 +39,7 @@ $( function() {
 
   var eltWidth;
   var zoomPress = false;
+  var multiSelect = false;
 /*
 * Make modular/general w/ API - think about init. (*list* of vals (not necessarily res #'s))
 */
@@ -150,7 +151,6 @@ $( function() {
 
     //console.log('liftoff!');
     var selection = ds.getSelection();
-
     if(selection.length==0){
       updateCurrSelection('','','startIndex',0);
       updateCurrSelection('','','endIndex',0);
@@ -240,6 +240,7 @@ var zoomds = new DragSelect({
   callback: function(){
     //console.log('hi');
     var selection = ds.getSelection();
+    console.log(selection);
 
     if(selection.length==0){
       updateCurrSelection('','','startIndex',0);
@@ -254,21 +255,25 @@ var zoomds = new DragSelect({
 
 
 
-//JQUERY STUFF
-$('#sequenceContainer').on( 'dialogresizestop',
-  function(event,ui){
-    $('.res').remove();
-    $('.divider').remove();
-    //console.log('resized');
-
-    //arrObjGlobal = [];
-    initialize('reload');
-    // ds.stop();
-    // ds.start();
-    ds.addSelectables(document.getElementsByClassName('res'));
-    //zoomds.start();
-  }
-);
+//JQUERY STUFF (RESIZING WINDOW HAS BUGS)
+// $('#sequenceContainer').on( 'dialogresizestop',
+//   function(event,ui){
+//
+//     $('.res').remove();
+//     $('.divider').remove();
+//     //console.log('resized');
+//
+//     //arrObjGlobal = [];
+//
+//     initialize('reload');
+//     // ds.stop();
+//     // ds.start();
+//     console.log(ds.getSelection());
+//     //ds.setSelection(ds.getSelection());
+//     ds.addSelectables(document.getElementsByClassName('res'));
+//     //zoomds.start();
+//   }
+// );
 
 // HELPER FUNCTIONS
 //helper function for mirroring selection/unselection between primary sequence div and zoom div
@@ -394,10 +399,12 @@ function updateSelDisplay(){
 //helper method for clearing selection (making selection array zero, removing DOM children elements)
 function clearAllSelection(){
   ds.clearSelection();
+  $('.ds-selected').remove();
   arrDisp.length=0;
   updateSelDisplay();
   updateCurrSelection('','','startIndex',0);
   updateCurrSelection('','','endIndex',0);
+
 }
 //split selection array into consecutive subarrays; called when selection is made
 function calibrateDisp(sel){
@@ -514,6 +521,7 @@ seqDiv.addEventListener('contextmenu',function(e){
 
 //make keypress event general (only open if there exists a value to be zoomed in on)
 document.addEventListener('keydown',function(e){
+
   if(e.shiftKey && seqDivFlag){
     zoomPress = true;
     //console.log('we here');
@@ -528,6 +536,7 @@ document.addEventListener('keydown',function(e){
     //console.log(resname + ' ' + resid);
 
   }
+
 
 
 });
