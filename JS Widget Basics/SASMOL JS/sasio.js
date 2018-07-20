@@ -19,6 +19,8 @@ var sprintf = require("sprintf-js").sprintf,
 
 
 window.onload=function(){
+  //global info file (for readPDB to access)
+  var info;
   //handling local files
   function handleFileSelect(e) {
     var files = e.target.files; // FileList object (list of File objects)
@@ -26,11 +28,11 @@ window.onload=function(){
     var reader = new FileReader();
     reader.onload = function (evt){
       //grabs info
-      var info = evt.target.result;
+      info = evt.target.result;
       //console.log(info);
       var obj  = Object.create(sasmol.SasMol);
       obj.readPDB(info);
-      console.log(obj.getAtom());
+      //console.log(obj.getAtom());
     }
     reader.readAsText(file);
   }
@@ -167,23 +169,23 @@ window.onload=function(){
 
     return fileStr;
   }
-}
-/**
- * writes PDB (not to file, but returns string)
- *
- * @returns {string} full file as string
- */
-//return string instead of console logging
-sasmol.SasMol.writePDB = function(){
-  var numAtoms = this.data.atom.length;
-  var fileStr = "";
-  //debugging
-  //console.log("          1         2         3         4         5         6         7         \n");
-  //console.log("01234567890123456789012345678901234567890123456789012345678901234567890123456789\n");
-  for(var i = 0; i<numAtoms;i++){
-    fileStr += vsprintf("%-6s%5s %-4s%1s%-4s%1s%4s%1s   %8s%8s%8s%6s%6s      %-4s%2s%2s\n", ["ATOM",this.getAtom()[i],this.getName()[0],this.getLoc()[0],this.getResname()[0],this.getChain()[0],this.getResID()[0],this.getRescode()[0],this.getCoorObj().x[0].toFixed(3),this.getCoorObj().y[0].toFixed(3),this.getCoorObj().z[0].toFixed(3),this.getOccupancy()[0].toFixed(2),this.getBeta()[0].toFixed(2),this.getSegname()[0],this.getElt()[0],this.getCharge()[0]]);
+  /**
+   * writes PDB (not to file, but returns string)
+   *
+   * @returns {string} full file as string
+   */
+  //return string instead of console logging
+  sasmol.SasMol.writePDB = function(){
+    var numAtoms = this.data.atom.length;
+    var fileStr = "";
+    //debugging
+    //console.log("          1         2         3         4         5         6         7         \n");
+    //console.log("01234567890123456789012345678901234567890123456789012345678901234567890123456789\n");
+    for(var i = 0; i<numAtoms;i++){
+      fileStr += vsprintf("%-6s%5s %-4s%1s%-4s%1s%4s%1s   %8s%8s%8s%6s%6s      %-4s%2s%2s\n", ["ATOM",this.getAtom()[i],this.getName()[0],this.getLoc()[0],this.getResname()[0],this.getChain()[0],this.getResID()[0],this.getRescode()[0],this.getCoorObj().x[0].toFixed(3),this.getCoorObj().y[0].toFixed(3),this.getCoorObj().z[0].toFixed(3),this.getOccupancy()[0].toFixed(2),this.getBeta()[0].toFixed(2),this.getSegname()[0],this.getElt()[0],this.getCharge()[0]]);
 
+    }
+    //console.log(fileStr);
+    return fileStr;
   }
-  //console.log(fileStr);
-  return fileStr;
 }

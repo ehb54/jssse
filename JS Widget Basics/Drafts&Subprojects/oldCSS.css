@@ -41,7 +41,6 @@
 } */
 * { user-select: none; }
 /* .res{
-
   z-index:-1;
   width:15px;
   height:15px;
@@ -57,7 +56,6 @@
   text-align:center;
   line-height:15px;
   border:0px;
-
   background-color: lightblue;
   font-size: 8px;
 } */
@@ -67,7 +65,7 @@
   position:relative;
   border:2px solid black;
 }
-.zoomDiv{
+#zoomDiv{
   height:50px;
   display: none;
   border: 2px solid black;
@@ -83,11 +81,10 @@
   text-align: center;
   font-size: 12px;
 }
-.locatorDiv{
-  top:40%;
+#locatorDiv{
+  top:20%;
   left:10px;
   position:absolute;
-  display: none;
   /*left: VARIABLE
   width: VARIABLE*/
   /* height:60px; */
@@ -95,7 +92,7 @@
   -webkit-box-sizing: border-box;
   display: block;
 }
-.locatorBox{
+#locatorBox{
   border: 2px solid blue;
   display: none;
   position:absolute;
@@ -130,7 +127,7 @@
   border-top:none;
   border-bottom:none;
 }
-.marker{
+#marker{
   position:absolute;
   border-width: 1px 0px 1px 1px;
   border-style: solid;
@@ -178,7 +175,7 @@
   background-color: transparent;
   color:black;
 }
-.customSelector{
+#customSelector{
   position: absolute;
   background: rgba(0, 0, 255, 0.1);
   border: 1px solid rgba(0, 0, 255, 0.45);
@@ -201,87 +198,11 @@
    height:10px;
    text-align: center;
    font-size:12px;
-   position:relative;
 }
 .divider{
     position:absolute;
     /* left:50%; */
     top:30%;
     bottom:20%;
-    /* border-right:1px solid black; */
-    border-left: 1px solid black;
-}
-
-/************************************************************************
-CANVAS PLAN WITH CSS GRID
-************************************************************************/
-.board {
-  display: grid;
-  grid-template-columns: 20% 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  grid-gap: 5px;
-  background-color: #2196F3;
-  padding: 10px;
-  height:600px;
-  grid-template-areas:
-    'PDB_viewer SSE SSE'
-    'builder-canvas builder-canvas builder-canvas';
-}
-.board > div {
-  /* background-color: rgba(255, 255, 255, 0.8); */
-  background-color: white;
-  text-align: center;
-  padding: 10px 0;
-  font-size: 20px;
-}
-#builder-canvas {
-  grid-area: builder-canvas;
-  /* grid-row-start: 1;
-  grid-row-end: 3; */
-  /* grid-column-start: 1;
-  grid-column-end: 4; */
-}
-/* .SSE-area{
-  grid-area: SSE-area;
-} */
-.PDB_viewer{
-  grid-area: PDB_viewer;
-}
-#SSE1{
-  grid-area:SSE1;
-}
-#SSE2{
-  grid-area: SSE2;
-}
-.SSE.sortable{
-  padding:0px;
-  /* width: 30%; */
-}
-.handle{
-  background-color:lightgray;
-  display: grid;
-  grid-template-columns: 9fr 1fr;
-  grid-template-rows: 40px;
-  cursor: move;
-}
-.SSE.placeholder {
-    border: 5px dashed red;
-    background-color: gray;
-    -webkit-box-shadow: 0px 0px 10px #888;
-    -moz-box-shadow: 0px 0px 10px #888;
-    box-shadow: 0px 0px 10px #888;
-}
-.btn {
-    background-color: red;
-    border: none;
-    color: white;
-    padding: 12px 16px;
-    font-size: 16px;
-    cursor: pointer;
-}
-.btn:hover {
-    background-color: DarkRed;
-}
-p{
-  margin:10px;
+    border-left:1px solid black;
 }

@@ -176,11 +176,11 @@ DragSelect.prototype._handleSelectables = function( selectables, remove, fromSel
 
       // also add to current selection
       if( fromSelection && this.selected.indexOf( selectable ) < 0 ) {
-        if(this.parentNode.className == 'sequenceDiv'){
+        if(this.parentNode.id == 'sequenceDiv'){
           this.addClass( selectable, 'ds-selected' );
         }
 
-        if(this.parentNode.className == 'zoomDiv'){
+        if(this.parentNode.id == 'zoomDiv'){
           this.addClass( selectable, 'zoomds-selected');
         }
         this.selected.push( selectable );
@@ -197,11 +197,11 @@ DragSelect.prototype._handleSelectables = function( selectables, remove, fromSel
 
       // also remove from current selection
       if( fromSelection && this.selected.indexOf( selectable ) > -1 ) {
-        if(this.parentNode.className == 'sequenceDiv'){
+        if(this.parentNode.id == 'sequenceDiv'){
 
           this.removeClass( selectable, 'ds-selected' );
         }
-        if(this.parentNode.className == 'zoomDiv'){
+        if(this.parentNode.id == 'zoomDiv'){
           this.removeClass( selectable, 'zoomds-selected');
         }
         this.selected.splice( this.selected.indexOf( selectable ), 1 );
@@ -565,13 +565,13 @@ DragSelect.prototype.select = function( item ) {
   if( this.selected.indexOf(item) > -1) { return false; }
 
   this.selected.push( item );
-  //console.log(document.getElementById(item.id).parentNode.className);
+  //console.log(document.getElementById(item.id).parentNode.id);
   //check which parent to apply correct class (aesthetic reasons)
-  if(document.getElementById(item.id).parentNode.className == 'sequenceDiv'){
+  if(document.getElementById(item.id).parentNode.id == 'sequenceDiv'){
 
     this.addClass( item, 'ds-selected' );
   }
-  if(document.getElementById(item.id).parentNode.className == 'zoomDiv'){
+  if(document.getElementById(item.id).parentNode.id == 'zoomDiv'){
     this.addClass( item, 'zoomds-selected');
   }
   this.selectCallback( item );
@@ -596,11 +596,11 @@ DragSelect.prototype.unselect = function( item ) {
   this.removeClass( item, 'ds-selected' );
   this.removeClass( item, 'zoomds-selected');
 
-  // if(document.getElementById(item.id).parentNode.className == 'sequenceDiv'){
+  // if(document.getElementById(item.id).parentNode.id == 'sequenceDiv'){
   //
   //   this.removeClass( item, 'ds-selected' );
   // }
-  // if(document.getElementById(item.id).parentNode.className == 'zoomDiv'){
+  // if(document.getElementById(item.id).parentNode.id == 'zoomDiv'){
   //   this.removeClass( item, 'zoomds-selected');
   // }
   this.unselectCallback( item );
@@ -1267,7 +1267,7 @@ DragSelect.prototype.updatePos = function( node, pos ) {
   node.style.height = pos.h + 'px';
 
   //if selection is made inside the primary sequence div, make it span top
-  if(node.parentNode.className == 'sequenceDiv'){
+  if(node.parentNode.id == 'sequenceDiv'){
     node.style.top='0px';
     node.style.height = '100%';
   }

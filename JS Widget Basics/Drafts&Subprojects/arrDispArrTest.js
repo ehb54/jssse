@@ -10,7 +10,7 @@ $( function() {
     width:500
   });
   //JSSE OBJECT should provide # of residues, array of objects in such format
-  var num = 100;
+  var num = 9;
   /**
    * @example
    GLOBAL OBJECT Array definition
@@ -69,19 +69,20 @@ $( function() {
       var newDivider = document.createElement('div');
       newDivider.className = 'divider';
 
-      if(i%10==0 && i!= 0 && num <= 200){
-        //console.log(i);
-        //rudimentary calculation
-        newDivider.style.left = (seqDivWidth/num)*i + 'px';
-        newDivider.style.fontSize = '12px';
-        var textNode = document.createTextNode(i);
-        newDivider.appendChild(textNode);
-        seqDiv.appendChild(newDivider);
+      if(num <= 20 && i<num){
+        createDivider();
       }
-      else if(i%100==0 && i!= 0 && num <=2000){
+      else if(i%10==0 && num <= 200 && i<num){
+        createDivider();
+      }
+      else if(i%100==0 && num <=2000 && i<num){
+        createDivider();
+      }
+      //nested function to create dividers
+      function createDivider(){
         newDivider.style.left = (seqDivWidth/num)*i + 'px';
         newDivider.style.fontSize = '12px';
-        var textNode = document.createTextNode(i);
+        var textNode = document.createTextNode(i+1);
         newDivider.appendChild(textNode);
         seqDiv.appendChild(newDivider);
       }
@@ -137,7 +138,7 @@ $( function() {
       updateCurrSelection('','','startIndex',0);
       updateCurrSelection('','','endIndex',0);
     }
-    calibrateDisp(selection);
+    calibrateDisp(selection, 0);
     updateSelDisplay();
     //console.log('sel array start: '+getKeyByValue(arrObjGlobal, selection[0].id));
     //console.log('sel array end: '+getKeyByValue(arrObjGlobal, selection[selection.length-1].id));
@@ -221,13 +222,14 @@ var zoomds = new DragSelect({
   },
   callback: function(){
     //console.log('hi');
-    var selection = ds.getSelection();
-
+    //var selection = ds.getSelection();
+    selection = zoomds.getSelection();
     if(selection.length==0){
       updateCurrSelection('','','startIndex',0);
       updateCurrSelection('','','endIndex',0);
     }
-    calibrateDisp(selection);
+    //console.log(selection);
+    calibrateDisp(selection, 1);
     updateSelDisplay();
   }
   //,selectables: document.getElementsByClassName('res')
@@ -268,17 +270,21 @@ function mirror(item,type){
     //console.log(item);
     ds.removeSelection(document.getElementById(equivID));
     if(document.getElementById('zoomDiv').childNodes.length > 2){
+    // if(zoomds.getSelection().length !=0){
       zoomds.removeSelection(document.getElementById(equivID+'zoomed'));
     }
   }
   else if(type =="select"){
     ds.addSelection(document.getElementById(equivID));
+    console.log(document.getElementById('zoomDiv').childNodes);
     if(document.getElementById('zoomDiv').childNodes.length > 2){
+    // if(zoomds.getSelection().length !=0){
+
       zoomds.addSelection(document.getElementById(equivID+'zoomed'));
     }
   }
 }
-
+var arrDispArr = [];
 
 var objArrKeyIndex =-1;
 function arrUpdate(val, option){
@@ -291,7 +297,7 @@ function arrUpdate(val, option){
     obj[objArrKey] = objArr;
 
     arrDisp.push(obj);
-    console.log(arrDisp);
+    //console.log(arrDisp);
     //objArrKeyIndex++;
   }
   else if(option == 'edit'){
@@ -382,7 +388,7 @@ function clearAllSelection(){
   updateCurrSelection('','','endIndex',0);
 }
 //split selection array into consecutive subarrays; called when selection is made
-function calibrateDisp(sel){
+function calibrateDisp(sel, widgetIndex){
   objArrKeyIndex = -1;
   //reset array
   arrDisp=[];
@@ -394,7 +400,10 @@ function calibrateDisp(sel){
 
   //1. sort Array
   for(var i=0; i<len;i++){
-    currKey = parseKey(getKeyByValue(arrObjGlobal, sel[i].id), type);
+
+    var reg = /(.{10})/;
+    //console.log(reg.exec(sel[i].id)[1]);
+    currKey = parseKey(getKeyByValue(arrObjGlobal, reg.exec(sel[i].id)[1]), type);
     arrSorted.push(currKey);
   }
   arrSorted.sort(function (a, b) {  return a - b;  });
@@ -424,6 +433,8 @@ function calibrateDisp(sel){
 
 
   }
+  arrDispArr[widgetIndex] = arrDisp;
+  //console.log(arrDispArr);
 }
 function parseKey(text, type){
   //instead of type, use general 3 letters for residue name?
@@ -515,6 +526,7 @@ document.addEventListener('keydown',function(e){
 //can't just listen to keyup
 document.addEventListener('keyup',function(e){
   if(zoomPress){
+    //console.log(zoomArr);
     //remove 'zoomed' class from primary seq
     for(var i = 0; i < zoomArr.length; i++){
       //document.getElementById(zoomArr[i]).classList.remove('zoomed-middle');
@@ -543,6 +555,7 @@ document.addEventListener('keyup',function(e){
     var zoomRangeLeft;
     var zoomRangeWidth;
     //SUBJECT TO CHANGE
+    console.log(val);
     var reg = /(\w{3})(\d+)/;
     var resname = reg.exec(val)[1];
     var resid = parseInt(reg.exec(val)[2]);
@@ -594,8 +607,8 @@ document.addEventListener('keyup',function(e){
         //mirrorItem.classList.add('zoomed-middle');
       }
       //add to zoom arr
-      zoomArr.push(id);
-
+       zoomArr.push(id);
+      //zoomArr[i] = id;
 
     }
     // //create visual range in primary seq div

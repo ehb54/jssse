@@ -1,36 +1,346 @@
+//bring in definitions (SASMOL and JSSSE)
+var SasMol = require('../SASMOL\ JS/sasmol.js');
 //disable right-click on page
 window.addEventListener('contextmenu', function (e) { // Not compatible with IE < 9
     e.preventDefault();
 }, false);
 //shorthand for $(document).ready(function(){ //CODE})
 $( function() {
-  $('#sequenceContainer').dialog({
-    title: 'JSSSE WIDGET',
-    height: 300,
-    width:500
-  });
+
+  /**************************************************************************
+    SASMOL/JSSSE CODE
+    *************************************************************************/
+
+    //global info file (for readPDB to access)
+    var info;
+    var firstRead = true;
+    var readBool = false;
+    var numPDB = 0;
+    var loadBool = false;
+    //handling local files
+    function handleFileSelect(e) {
+      numPDB++;
+      var files = e.target.files; // FileList object (list of File objects)
+      var file = files[0];
+      var reader = new FileReader();
+      //display info to HTML
+      var output = [];
+      reader.onload = function (evt){
+
+
+        //display file INFORMATION
+        for (var i = 0, f; f = files[i]; i++) {
+          //store read information inside jssse objects
+          //grabs info
+          info = evt.target.result;
+          jssse.readPDB(info);
+          readBool = true;
+          num = jssse.getAtom().length;
+          //only initialize if there is valid PDB to be read
+          if(firstRead && num != 0){
+            populateWindows('sobj1');
+            initialize('start', jssse,0);
+          }
+          else{
+            initialize('reload',jssse,0);
+          }
+          firstRead = false;
+          readBool = true;
+
+          //html stuff for display
+          output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+          f.size, ' bytes, last modified: ',
+          f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+          '</li>');
+
+
+        }
+        document.getElementById('fileInfo').innerHTML = '<ul>' + output.join('') + '</ul>';
+      }
+
+
+      reader.onerror = function(){
+        //default readBool to false if somehow the reader onload event is not fired or there is an error
+        readBool = false;
+        console.log('FileReader error with reading file');
+      }
+      reader.readAsText(file);
+    }
+    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+    var jssse = Object.create(SasMol.SasMol);
+
+
+
+    /**************************************************************************
+      DEVELOPER CODE
+      *************************************************************************/
+
+      $(".board")
+      .sortable({
+        items: ".sortable",
+        placeholder: 'SSE placeholder',
+        forceHelperSize: true,
+        tolerance:'pointer',
+        handle: '.handle',
+        scroll: false,
+        cursor: 'move'
+      });
+    var closeButtons = document.getElementsByClassName('close');
+    var board = document.getElementById('board');
+      closeButtons[0].addEventListener('click', function(e){
+        //close window
+        console.log(e.target);
+        //$('#closeButton').remove();
+      });
+
+
+
+
+  // $('#widget-container').dialog({
+  //   title: 'JSSSE WIDGET',
+  //   height: 300,
+  //   width:500
+  // });
+
+  function populateWindows(sobjID){
+    //console.log(sobjID);
+    var sobj = document.getElementById(sobjID);
+    //create div elt's
+    for(var i = 0; i < numPDB; i++){
+      //main sequence display
+      var widgetContainer = document.createElement('div');
+      //widgetContainer.style.textAlign = 'center';
+      widgetContainer.classList.add('widget-container');
+      widgetContainer.id = 'widget-container'+i;
+      //widgetContainer.style.position = 'absolute';
+
+      var sequenceContainer = document.createElement('div');
+      sequenceContainer.classList.add('sequenceContainer');
+      sequenceContainer.style.position = 'relative';
+      var sequenceDiv = document.createElement('div');
+      sequenceDiv.classList.add('sequenceDiv');
+      sequenceDiv.id = 'sequenceDiv'+i;
+      sequenceDiv.tabIndex = '0';
+      var marker = document.createElement('div');
+      marker.classList.add('marker');
+      var customSelector = document.createElement('div');
+      customSelector.classList.add('customSelector');
+      customSelector.style.height=  '100%';
+      var locatorDiv = document.createElement('div');
+      locatorDiv.classList.add('locatorDiv');
+      var locatorBox = document.createElement('div');
+      locatorBox.classList.add('locatorBox');
+      var zoomDiv = document.createElement('div');
+      zoomDiv.classList.add('zoomDiv');
+      locatorDiv.appendChild(locatorBox);
+      sequenceDiv.appendChild(marker);
+      sequenceDiv.appendChild(customSelector);
+      sequenceDiv.appendChild(locatorDiv);
+      // sequenceDiv.appendChild(customSelector);
+
+      sequenceContainer.appendChild(sequenceDiv);
+      sequenceContainer.appendChild(zoomDiv);
+
+      var sequenceSelInfoDiv = document.createElement('div');
+      sequenceSelInfoDiv.classList.add('sequenceSelInfoDiv');
+      sequenceSelInfoDiv.style.display = 'inline-block';
+      sequenceSelInfoDiv.style.textAlign = 'center';
+      var div = document.createElement('div');
+      var title = document.createElement('strong');
+      var titleText = document.createTextNode('CURRENT SELECTION');
+      title.appendChild(titleText);
+      var div2 = document.createElement('div');
+      div2.style.textAlign = 'center';
+      var clearSelBtn = document.createElement('button');
+      clearSelBtn.classList.add('clearSelection');
+      var clearSelBtnText = document.createTextNode('Clear Selection');
+      var startSpan = document.createElement('span');
+      var startText = document.createTextNode('START ');
+      var startIndex = document.createElement('span');
+      startIndex.classList.add('startIndex');
+      var endSpan = document.createElement('span');
+      var endText = document.createTextNode(' : END ');
+      var endIndex = document.createElement('span');
+      endIndex.classList.add('endIndex');
+
+      var selectDisplay = document.createElement('div');
+      selectDisplay.classList.add('selectDisplay');
+
+      var selectDisplayRange = document.createElement('div');
+      selectDisplayRange.classList.add('selectDisplayRange');
+
+      selectDisplay.appendChild(selectDisplayRange);
+      sequenceSelInfoDiv.appendChild(div);
+
+      clearSelBtn.appendChild(clearSelBtnText);
+      div2.appendChild(clearSelBtn);
+      div.appendChild(title);
+      div.appendChild(div2);
+      startSpan.appendChild(startText);
+      div.appendChild(startSpan);
+      div.appendChild(startIndex);
+      endSpan.appendChild(endText);
+      div.appendChild(endSpan);
+      div.appendChild(endIndex);
+      div.appendChild(selectDisplay);
+
+
+      widgetContainer.appendChild(sequenceSelInfoDiv);
+      widgetContainer.appendChild(sequenceContainer);
+      //append to sobj
+      sobj.appendChild(widgetContainer);
+
+      //add event listeners
+      //add clear selection functionality
+      //var btn = document.getElementById('clearSelection');
+      clearSelBtn.addEventListener('click',function(e){
+        clearAllSelection(widgetIndex);
+      });
+      //add marker to follow mouse in div
+      sequenceDiv.addEventListener('mousemove', function(e){
+        seqDivFlag = true;
+        var seqDivPosition = getPosition(sequenceDiv);
+        //console.log('mousein '+ (e.pageX - seqDivPosition.x));
+        marker.style.display = 'block';
+        marker.style.left = (e.pageX - seqDivPosition.x)+'px';
+        locatorBox.style.display = 'inline-block';
+
+        //only display locator if there's a valid PDB being read
+        if(readBool){
+          //console.log(e.pageX - seqDivPosition.x);
+          displayLocator(getIndexByWidth(e.pageX - seqDivPosition.x, widgetIndex), widgetIndex);
+        }
+
+      });
+
+      sequenceDiv.addEventListener('mouseleave',function(e){
+        seqDivFlag = false;
+        //console.log('mouseout '+e.clientX);
+        marker.style.display = 'none';
+        locatorDiv.style.display = 'none';
+      });
+      //listen to right-click
+      sequenceDiv.addEventListener('contextmenu',function(e){
+        //clearAllSelection();
+        sequenceDiv.focus();
+      });
+
+
+
+
+
+      var widgetIndex = i;
+
+      //push to arrays
+      seqContainerArr[i] = sequenceContainer;
+      seqDivArr[i] = sequenceDiv;
+      locatorDivArr[i] = locatorDiv;
+      locatorBoxArr[i] = locatorBox;
+    //  console.log(i);
+
+      zoomDivArr[i] = zoomDiv;
+      seqSelDivArr[i] = selectDisplay;
+      seqSelRangeDivArr[i] = selectDisplayRange;
+      startIndexArr[i] = startIndex;
+      endIndexArr[i] = endIndex;
+
+
+    }
+    loadBool = true;
+  }
+
+//DOCUMENT EVENT LISTENERS
+//make keypress event general (only open if there exists a value to be_zoomed in on)
+document.addEventListener('keydown',function(e){
+
+  var activeElt = document.activeElement;
+  if(e.shiftKey && seqDivFlag && (activeElt.className == 'sequenceDiv')){
+    zoomPress = true;
+
+    //extract id
+    var reg = /(\d)/;
+    var widgetIndex = reg.exec(activeElt.id)[1];
+    //console.log(widgetIndex);
+
+    zoomDivArr[widgetIndex].style.display = 'block';
+    if((parseInt(locatorBoxArr[widgetIndex].innerText) < objSelArr[widgetIndex].length)){
+
+      var info = Object.keys(objSelArr[widgetIndex][parseInt(locatorBoxArr[widgetIndex].innerText)])[0];
+      populateZoomDiv(info, widgetIndex);
+    }
+    //console.log(info);
+
+    currentZoomedWidget = widgetIndex;
+    //console.log(resname + ' ' + resid);
+  }
+
+
+
+});
+//can't just listen to keyup
+document.addEventListener('keyup',function(e){
+  if(zoomPress){
+    //remove 'zoomed' class from primary seq
+    for(var i = 0; i < zoomMasterArr[currentZoomedWidget].length; i++){
+      //document.getElementById(zoomArr[i]).classList.remove('zoomed-middle');
+      document.getElementById(zoomMasterArr[currentZoomedWidget][i]).classList.remove('zoomed-lefthook');
+      document.getElementById(zoomMasterArr[currentZoomedWidget][i]).classList.remove('zoomed-righthook');
+    }
+    zoomMasterArr[currentZoomedWidget] = [];
+    //console.log('we out');
+    zoomDivArr[currentZoomedWidget].style.display = 'none';
+    zoomPress = false;
+  }
+
+});
+
+  //if(loadBool){
   //JSSSE OBJECT should provide # of residues, array of objects in such format
-  var num = 100;
+  var num;
   /**
    * @example
    GLOBAL OBJECT Array definition
    format: [{res#: _uuid}, ...  ]
    res: [{ala1: '_8vmw96mko'}, {glu2: '_y6cdst2mm'}, ...]
    */
-  var seqContainer = document.getElementById('sequenceContainer');
-  var seqDiv = document.getElementById('sequenceDiv');
-  //seqDiv.focus();
-  var locatorDiv = document.getElementById('locatorDiv');
-  var locatorBox = document.getElementById('locatorBox');
-  //subtract pixels from border
-  var seqDivWidth;
-  var zoomDiv = document.getElementById('zoomDiv');
-  var seqSelDiv = document.getElementById('selectDisplay');
-  var seqSelRangeDiv = document.getElementById('selectDisplayRange');
-  var seqSelDetDiv = document.getElementById('selectDisplayDetails');
-  var arrObjGlobal = [];
-  var zoomArr = [];
-  //var arrObjGlobal = {};
+   //access DOM elt's by classname (not id because they are not unique - multiple selects)
+   var seqContainerArr = [];
+   var seqDivArr = [];
+   //seqDiv.focus();
+   var locatorDivArr = [];
+   var locatorBoxArr = [];
+   //subtract pixels from border
+   var seqDivWidthArr = [];
+   var zoomDivArr = [];
+   var seqSelDivArr = [];
+   var seqSelRangeDivArr = [];
+
+   var eltWidthArr = [];
+
+   var dsArr = [];
+   var zoomdsArr = [];
+   var arrDispArr = [];
+   var zoomMasterArr = [];
+   var objSelArr = [];
+   var startIndexArr = [];
+   var endIndexArr = [];
+   var seqDivFlag = false;
+   var currentZoomedWidget;
+  // var seqContainer = document.getElementById('sequenceContainer');
+  // var seqDiv = document.getElementById('sequenceDiv');
+  // //seqDiv.focus();
+  // var locatorDiv = document.getElementById('locatorDiv');
+  // var locatorBox = document.getElementById('locatorBox');
+  // //subtract pixels from border
+  // var seqDivWidth;
+  // var zoomDiv = document.getElementById('zoomDiv');
+  // var seqSelDiv = document.getElementById('selectDisplay');
+  // var seqSelRangeDiv = document.getElementById('selectDisplayRange');
+  // var seqSelDetDiv = document.getElementById('selectDisplayDetails');
+  // var objSelArr[widgetIndex] = [];
+   var zoomArr = [];
+  //var objSelArr[widgetIndex] = {};
   var type = 'res';
   var arrDisp = [];
   var aminoAcidArr = [
@@ -40,217 +350,255 @@ $( function() {
   var eltWidth;
   var zoomPress = false;
   var multiSelect = false;
-/*
-* Make modular/general w/ API - think about init. (*list* of vals (not necessarily res #'s))
-*/
-  function initialize(action){
+
+
+//initialize residues inside divs
+  function initialize(action, object, widgetIndex){
+    var seqDiv = seqDivArr[widgetIndex];
+    objSelArr[widgetIndex] = [];
+    //objSelArr[widgetIndex][widgetIndex] = [];
+    //console.log(object);
+    if(action=='reload'){
+      $('.sequenceDiv '+ widgetIndex).find('.res').remove();
+      $('.sequenceDiv '+ widgetIndex).find('.dividers').remove();
+          //console.log('resized');
+
+          objSelArr[widgetIndex][widgetIndex] = [];
+
+          // initialize('reload');
+          // dsArr[widgetIndex].stop();
+          // dsArr[widgetIndex].start();
+          //console.log(dsArr[widgetIndex].getSelection());
+          //dsArr[widgetIndex].setSelection(dsArr[widgetIndex].getSelection());
+          //dsArr[widgetIndex].addSelectables(document.getElementsByClassName('res'));
+          //zoomdsArr[widgetIndex].start();
+    }
+
     //update calculation
-    seqDivWidth = seqDiv.offsetWidth-4;
-
-
+    var seqDivWidth = seqDivArr[widgetIndex].offsetWidth-4;
+    //console.log(obj);
     //initialize span elements
-    for(var i=1;i<num;i++){
+    for(var i=0;i<num;i++){
+
       var newSpan = document.createElement('span');
       newSpan.className = 'res';
       newSpan.style.width = (seqDivWidth/num) + 'px';
-
-      if(action == 'start'){
-        newSpan.id = '_' + Math.random().toString(36).substr(2, 9);
+      //if(action == 'start'){
+        //placeholder unique ids (before implementing readPDB)
+        //newSpan.id = '_' + Math.random().toString(36).substr(2, 9);
+        //newSpan.id = object.getResID()[i];
+        newSpan.id = 'pdb'+numPDB+'_'+'atom'+object.getAtom()[i];
         //assuming res id's unique, make keys ordered and sorted to make later arithmetic easier (parse obj for string instead of res)
 
-        var key = aminoAcidArr[Math.floor(Math.random() * Math.floor(aminoAcidArr.length-1))]+i;
+        //var key = aminoAcidArr[Math.floor(Math.random() * Math.floor(aminoAcidArr.length-1))]+(i+1);
+        //console.log(object.getResname()[i]);
+        //console.log(object.getAtom()[i]);
+        var key = object.getName()[i] + " "+ object.getAtom()[i].toString();
         //var key = 'res'+i;
         var obj = {};
         obj[key] = newSpan.id;
-        arrObjGlobal.push(obj);
-        //arrObjGlobal[key]=newSpan.id;
-      }
-      else if (action == 'reload'){
-        //console.log(arrObjGlobal[i-1][Object.keys(arrObjGlobal[i - 1])]);
-        newSpan.id = arrObjGlobal[i-1][Object.keys(arrObjGlobal[i - 1])];
-
-        //account for selections made before
-        var selection = ds.getSelection();
-        for(var j = 0; j < selection.length; j++){
-          if(newSpan.id == selection[j].id){
-            newSpan.classList.add('ds-selected');
-
-          }
-        }
-      }
+        objSelArr[widgetIndex].push(obj);
+        //objSelArr[widgetIndex][key]=newSpan.id;
+      //}
+      // else if (action == 'reload'){
+      //   //console.log(objSelArr[widgetIndex][i-1][Object.keys(objSelArr[widgetIndex][i - 1])]);
+      //   //newSpan.id = objSelArr[widgetIndex][i-1][Object.keys(objSelArr[widgetIndex][i - 1])];
+      //   newSpan.id = objSelArr[widgetIndex][i][Object.keys(objSelArr[widgetIndex][i])];
+      //   //account for selections made before
+      //   var selection = dsArr[widgetIndex].getSelection();
+      //   for(var j = 0; j < selection.length; j++){
+      //     if(newSpan.id == selection[j].id){
+      //       newSpan.classList.add('ds-selected');
+      //
+      //     }
+      //   }
+      // }
       //newSpan.id = i;
       seqDiv.appendChild(newSpan);
 
-
+      //if(i==0){console.log(newSpan.offsetLeft);}
       //insert dividers
       var newDivider = document.createElement('div');
       newDivider.className = 'divider';
 
-      if(i%10==0 && i!= 0 && num <= 200){
-        //console.log(i);
-        //rudimentary calculation
+      if(num <= 20 && i<num){
+        createDivider();
+      }
+      else if(i%10==0 && num <= 200 && i<num){
+        createDivider();
+      }
+      else if(i%100==0 && num <=2000 && i<num){
+        createDivider();
+      }
+      //nested function to create dividers
+      function createDivider(){
         newDivider.style.left = (seqDivWidth/num)*i + 'px';
         newDivider.style.fontSize = '12px';
-        var textNode = document.createTextNode(i);
+        var textNode = document.createTextNode(i+1);
         newDivider.appendChild(textNode);
         seqDiv.appendChild(newDivider);
       }
-      else if(i%100==0 && i!= 0 && num <=2000){
-        newDivider.style.left = (seqDivWidth/num)*i + 'px';
-        newDivider.style.fontSize = '12px';
-        var textNode = document.createTextNode(i);
-        newDivider.appendChild(textNode);
-        seqDiv.appendChild(newDivider);
-      }
-
 
     }
     //update elt width after new calculations
-      eltWidth = document.getElementsByClassName('res')[0].getBoundingClientRect().width;
+      eltWidth = document.querySelectorAll('.res')[0].getBoundingClientRect().width;
+      //ensure that the new elt's are added to the dragselect
+      //dsArr[widgetIndex].addSelectables(document.getElementsByClassName('res'));
+
+      seqDivWidthArr[widgetIndex] = seqDivWidth;
+      eltWidthArr[widgetIndex] = eltWidth;
+      console.log(objSelArr);
+
+      //initiate dragselectors
+        var ds = new DragSelect({
+        selectables: document.getElementsByClassName('res'),
+        area: seqDiv,
+        multiSelectKeys: ['ctrlKey'],
+        onDragMove: function(e){
+          var selection = dsArr[widgetIndex].getSelection();
+          //only do computations if there selection array isn't empty
+          if(selection.length>0){
+            var lastElt = selection[selection.length-1].id;
+            //console.log("lastELt: "+lastElt);
+            var matchedKey = getKeyByValue(objSelArr[widgetIndex], lastElt);
+
+            //console.log(matchedKey);
+            updateCurrSelection(matchedKey, type, 'endIndex', 'update', widgetIndex);
+          }
+        },
+        onDragStart: function(e){
+          var selection = dsArr[widgetIndex].getSelection();
+          //console.log(selection);
+          //var firstElt = selection[0].id;
+          //only do computations if there selection array isn't empty
+          if(selection.length>0){
+            var lastElt = selection[selection.length-1].id;
+            //console.log(lastElt);
+            var matchedKey = getKeyByValue(objSelArr[widgetIndex], lastElt);
+            updateCurrSelection(matchedKey, type, 'startIndex', 'update', widgetIndex);
+          }
+
+
+        },
+        //onElementSelect: function(e){console.log(e);},
+        callback: function(){
+          //clear all elements first
+          $('.res.zoom').remove();
+
+
+
+          var selection = dsArr[widgetIndex].getSelection();
+          if(selection.length==0){
+            updateCurrSelection('','','startIndex',0, widgetIndex);
+            updateCurrSelection('','','endIndex',0, widgetIndex);
+          }
+          calibrateDisp(widgetIndex);
+          updateSelDisplay(widgetIndex);
+          //console.log('sel array start: '+getKeyByValue(objSelArr[widgetIndex], selection[0].id));
+          //console.log('sel array end: '+getKeyByValue(objSelArr[widgetIndex], selection[selection.length-1].id));
+          //loop through selection and create zoomable rects
+          for(var resIndex=0; resIndex<selection.length;resIndex++){
+            var resZoom = document.createElement('span');
+            resZoom.className = 'res zoom';
+            //var resZoomID = arr[resIndex];
+            //resZoom.innerText = arr[resIndex];
+            //resZoom.style.transform = 'scale(2)';
+            resZoom.style.height = '30px';
+            resZoom.style.width = '30px';
+            resZoom.style.fontSize = '14px';
+            resZoom.style.margin = '5px';
+            resZoom.style.border = '1px solid black';
+            resZoom.style.lineHeight = '30px';
+            resZoom.style.top = '30%';
+            //zoomBox.appendChild(resZoom);
+
+          }
+      /*
+          //check if div has any elements
+          if (!zoomBox.hasChildNodes()){
+            zoomBox.style.display = 'none';
+          }
+          else{
+            zoomBox.style.display = 'inline-block';
+          }*/
+        },
+        selector: document.getElementsByClassName('customSelector')[widgetIndex],
+        onElementSelect: function(item){
+          mirror(item,'select', widgetIndex);
+        },
+        onElementUnselect: function(item){
+          mirror(item,"unselect", widgetIndex);
+        }
+
+      });
+
+      //instantiate new dragselect within zoombox
+      var zoomds = new DragSelect({
+        multiSelectKeys: ['ctrlKey'],
+        area:zoomDivArr[widgetIndex],
+        onDragMove: function(e){
+
+          var selection = zoomdsArr[widgetIndex].getSelection();
+
+          //only do computations if there selection array isn't empty
+          if(selection.length>0){
+            //SUBJECT TO CHANGE
+            // var regex = /(\d+)/;
+            var regex = /pdb(\d*)_[^_]*/;
+            //equivID = regex.exec(item.id)[1];
+            var lastElt = regex.exec(selection[selection.length-1].id)[0];
+            //var lastElt = selection[selection.length-1].id;
+            var matchedKey = getKeyByValue(objSelArr[widgetIndex], lastElt);
+
+            //console.log(matchedKey);
+            updateCurrSelection(matchedKey, type, 'endIndex', 'update', widgetIndex);
+          }
+        },
+        onDragStart: function(e){
+          var selection = zoomdsArr[widgetIndex].getSelection();
+          //console.log(selection);
+          //var firstElt = selection[0].id;
+          //only do computations if there selection array isn't empty
+          if(selection.length>0){
+            // var regex = /(\d+)/;
+            var regex = /pdb(\d*)_[^_]*/;
+            var lastElt = regex.exec(selection[selection.length-1].id)[0];
+            //var lastElt = selection[selection.length-1].id;
+
+            console.log(lastElt);
+            var matchedKey = getKeyByValue(objSelArr[widgetIndex], lastElt);
+            updateCurrSelection(matchedKey, type, 'startIndex', 'update', widgetIndex);
+          }
+
+
+        },
+        onElementSelect: function(item){
+          mirror(item,'select', widgetIndex);
+        },
+        onElementUnselect: function(item){
+          //console.log(item);
+          mirror(item,"unselect", widgetIndex);
+        },
+        callback: function(){
+          //console.log('hi');
+          var selection = dsArr[widgetIndex].getSelection();
+          console.log(selection);
+
+          if(selection.length==0){
+            updateCurrSelection('','','startIndex',0, widgetIndex);
+            updateCurrSelection('','','endIndex',0, widgetIndex);
+          }
+          calibrateDisp(widgetIndex);
+          updateSelDisplay(widgetIndex);
+        }
+        //,selectables: document.getElementsByClassName('res')
+      });
+      dsArr[widgetIndex] = ds;
+      zoomdsArr[widgetIndex] = zoomds;
+      //console.log(dsArr);
+      document.getElementById('widget-container'+widgetIndex).style.position = 'absolute';
   }
-  initialize('start');
 
-  // eltWidth = document.getElementsByClassName('res')[0].getBoundingClientRect().width;
-
-//initiate ds variable
-  var ds = new DragSelect({
-  selectables: document.getElementsByClassName('res'),
-  area: seqDiv,
-  multiSelectKeys: ['ctrlKey'],
-  onDragMove: function(e){
-    var selection = ds.getSelection();
-    //only do computations if there selection array isn't empty
-    if(selection.length>0){
-      var lastElt = selection[selection.length-1].id;
-
-      var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
-
-      //console.log(matchedKey);
-      updateCurrSelection(matchedKey, type, 'endIndex', 'update');
-    }
-  },
-  onDragStart: function(e){
-    var selection = ds.getSelection();
-    //console.log(selection);
-    //var firstElt = selection[0].id;
-    //only do computations if there selection array isn't empty
-    if(selection.length>0){
-      var lastElt = selection[selection.length-1].id;
-      //console.log(lastElt);
-      var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
-      updateCurrSelection(matchedKey, type, 'startIndex', 'update');
-    }
-
-
-  },
-  //onElementSelect: function(e){console.log(e);},
-  callback: function(){
-    //clear all elements first
-    $('.res.zoom').remove();
-
-
-    //console.log('liftoff!');
-    var selection = ds.getSelection();
-    if(selection.length==0){
-      updateCurrSelection('','','startIndex',0);
-      updateCurrSelection('','','endIndex',0);
-    }
-    calibrateDisp(selection);
-    updateSelDisplay();
-    //console.log('sel array start: '+getKeyByValue(arrObjGlobal, selection[0].id));
-    //console.log('sel array end: '+getKeyByValue(arrObjGlobal, selection[selection.length-1].id));
-    //loop through selection and create zoomable rects
-    for(var resIndex=0; resIndex<selection.length;resIndex++){
-      var resZoom = document.createElement('span');
-      resZoom.className = 'res zoom';
-      //var resZoomID = arr[resIndex];
-      //resZoom.innerText = arr[resIndex];
-      //resZoom.style.transform = 'scale(2)';
-      resZoom.style.height = '30px';
-      resZoom.style.width = '30px';
-      resZoom.style.fontSize = '14px';
-      resZoom.style.margin = '5px';
-      resZoom.style.border = '1px solid black';
-      resZoom.style.lineHeight = '30px';
-      resZoom.style.top = '30%';
-      //zoomBox.appendChild(resZoom);
-
-    }
-/*
-    //check if div has any elements
-    if (!zoomBox.hasChildNodes()){
-      zoomBox.style.display = 'none';
-    }
-    else{
-      zoomBox.style.display = 'inline-block';
-    }*/
-  },
-  selector: document.getElementById('customSelector'),
-  onElementSelect: function(item){
-    mirror(item,'select');
-  },
-  onElementUnselect: function(item){
-    mirror(item,"unselect");
-  }
-
-});
-
-//instantiate new dragselect within zoombox
-var zoomds = new DragSelect({
-  multiSelectKeys: ['ctrlKey'],
-  area:zoomDiv,
-  onDragMove: function(e){
-    var selection = zoomds.getSelection();
-
-    //only do computations if there selection array isn't empty
-    if(selection.length>0){
-      //SUBJECT TO CHANGE
-      var regex = /(.{10})/;
-      //equivID = regex.exec(item.id)[1];
-      var lastElt = regex.exec(selection[selection.length-1].id)[1];
-
-      var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
-
-      //console.log(matchedKey);
-      updateCurrSelection(matchedKey, type, 'endIndex', 'update');
-    }
-  },
-  onDragStart: function(e){
-    var selection = zoomds.getSelection();
-    //console.log(selection);
-    //var firstElt = selection[0].id;
-    //only do computations if there selection array isn't empty
-    if(selection.length>0){
-      var regex = /(.{10})/;
-      var lastElt = regex.exec(selection[selection.length-1].id)[1];
-      //console.log(lastElt);
-      var matchedKey = getKeyByValue(arrObjGlobal, lastElt);
-      updateCurrSelection(matchedKey, type, 'startIndex', 'update');
-    }
-
-
-  },
-  onElementSelect: function(item){
-    mirror(item,'select');
-  },
-  onElementUnselect: function(item){
-    //console.log(item);
-    mirror(item,"unselect");
-  },
-  callback: function(){
-    //console.log('hi');
-    var selection = ds.getSelection();
-    console.log(selection);
-
-    if(selection.length==0){
-      updateCurrSelection('','','startIndex',0);
-      updateCurrSelection('','','endIndex',0);
-    }
-    calibrateDisp(selection);
-    updateSelDisplay();
-  }
-  //,selectables: document.getElementsByClassName('res')
-});
 
 
 
@@ -263,48 +611,49 @@ var zoomds = new DragSelect({
 //     $('.divider').remove();
 //     //console.log('resized');
 //
-//     //arrObjGlobal = [];
+//     //objSelArr[widgetIndex] = [];
 //
 //     initialize('reload');
-//     // ds.stop();
-//     // ds.start();
-//     console.log(ds.getSelection());
-//     //ds.setSelection(ds.getSelection());
-//     ds.addSelectables(document.getElementsByClassName('res'));
-//     //zoomds.start();
+//     // dsArr[widgetIndex].stop();
+//     // dsArr[widgetIndex].start();
+//     console.log(dsArr[widgetIndex].getSelection());
+//     //dsArr[widgetIndex].setSelection(dsArr[widgetIndex].getSelection());
+//     dsArr[widgetIndex].addSelectables(document.getElementsByClassName('res'));
+//     //zoomdsArr[widgetIndex].start();
 //   }
 // );
 
 // HELPER FUNCTIONS
 //helper function for mirroring selection/unselection between primary sequence div and zoom div
-function mirror(item,type){
-  var zoomSel = zoomds.getSelection();
-  var mainSel = ds.getSelection();
+function mirror(item,type, widgetIndex){
+  var zoomSel = zoomdsArr[widgetIndex].getSelection();
+  var mainSel = dsArr[widgetIndex].getSelection();
 
   //SUBJECT TO CHANGE (depends on ID)
-  var regex = /(.{10})/;
-  equivID = regex.exec(item.id)[1];
-
-
+  //var regex = /pdb(\d+)_atom(.*)/;
+  var regex = /pdb(\d*)_[^_]*/;
+  equivID = regex.exec(item.id)[0];
+  //console.log(equivID);
   if(type == "unselect"){
     //console.log('UNSELECTED');
     //console.log(item);
-    ds.removeSelection(document.getElementById(equivID));
-    if(document.getElementById('zoomDiv').childNodes.length > 2){
-      zoomds.removeSelection(document.getElementById(equivID+'zoomed'));
+    dsArr[widgetIndex].removeSelection(document.getElementById(equivID));
+    if(document.getElementsByClassName('zoomDiv')[widgetIndex].childNodes.length > 1){
+      zoomdsArr[widgetIndex].removeSelection(document.getElementById(equivID+'_zoomed'));
     }
   }
   else if(type =="select"){
-    ds.addSelection(document.getElementById(equivID));
-    if(document.getElementById('zoomDiv').childNodes.length > 2){
-      zoomds.addSelection(document.getElementById(equivID+'zoomed'));
+    //console.log(item);
+    dsArr[widgetIndex].addSelection(document.getElementById(equivID));
+    if(document.getElementsByClassName('zoomDiv')[widgetIndex].childNodes.length > 1){
+      zoomdsArr[widgetIndex].addSelection(document.getElementById(equivID+'_zoomed'));
     }
   }
 }
 
 
 var objArrKeyIndex =-1;
-function arrUpdate(val, option){
+function arrUpdate(val, option, widgetIndex){
   if(option == 'new'){
     objArrKeyIndex++;
     var objArrKey = 'arr'+objArrKeyIndex;
@@ -321,32 +670,34 @@ function arrUpdate(val, option){
     var objArrKey = 'arr'+objArrKeyIndex;
     arrDisp[objArrKeyIndex][objArrKey].push(val);
   }
-  //console.log(arrDisp)
+  // console.log(arrDisp);
   //console.log(arrDisp[0]['arr'+objArrKeyIndex]);
   //console.log('length: '+arrDisp.length);
 }
-function updateCurrSelection(text, type, spanID, mode){
+function updateCurrSelection(text, type, spanClass, mode, widgetIndex){
 
   //dynamically display current selection:
   var str = '';
   if (mode=='update'){
       //console.log(text);
-     str = parseKey(text, type).toString();
+     str = (parseKey(text, type)).toString();
 
   }
-  document.getElementById(spanID).innerText = str;
+  document.getElementsByClassName(spanClass)[widgetIndex].innerText = str;
 }
 
-function updateSelDisplay(){
+function updateSelDisplay(widgetIndex){
   //add display for SELECTION
-  var len=arrDisp.length;
+  var len=arrDispArr[widgetIndex].length;
+  //console.log(arrDispArr[widgetIndex]);
   //clear children first
-  while (seqSelRangeDiv.firstChild) {
-    seqSelRangeDiv.removeChild(seqSelRangeDiv.firstChild);
+  while (seqSelRangeDivArr[widgetIndex].firstChild) {
+    seqSelRangeDivArr[widgetIndex].removeChild(seqSelRangeDivArr[widgetIndex].firstChild);
   }
-  while (seqSelDetDiv.firstChild) {
-    seqSelDetDiv.removeChild(seqSelDetDiv.firstChild);
-  }
+  //detail div nonexistent
+  // while (seqSelDetDiv.firstChild) {
+  //   seqSelDetDiv.removeChild(seqSelDetDiv.firstChild);
+  // }
   if(len>0){
 
     for(var i=0;i<len;i++){
@@ -354,7 +705,7 @@ function updateSelDisplay(){
       var selspan = document.createElement('span');
       var selInfospan = document.createElement('span');
       //startCount.style.margin = '0px 2px';
-      var subarray = arrDisp[i]['arr'+i];
+      var subarray = arrDispArr[widgetIndex][i]['arr'+i];
       var text = (subarray[0]).toString();
 
       //if subarray has more than one element, initialize colon part and 'to' part
@@ -370,56 +721,42 @@ function updateSelDisplay(){
       var textNode = document.createTextNode(text);
       selspan.appendChild(textNode);
       selspan.classList.add('subarray');
+      //console.log('we here');
+      seqSelRangeDivArr[widgetIndex].appendChild(selspan);
 
-      seqSelRangeDiv.appendChild(selspan);
-
-      //seqSelDetDiv
-      //get res name
-      //console.log(subarray[0]);
-
-      var detailsDisp = [];
-      for(var j = 0;j<subarray.length;j++){
-        for (key in arrObjGlobal[subarray[j]-1]){
-          var reg = new RegExp('(\\w{3})\\d+', 'g');
-          var res = reg.exec(key)[1];
-          detailsDisp.push(res);
-        }
-        //console.log(arrObjGlobal[subarray[j]]);
-      }
-      text = JSON.stringify(detailsDisp);
-      //console.log(text);
-      textNode = document.createTextNode(text);
-      selInfospan.appendChild(textNode);
-      selInfospan.classList.add('subarray');
-
-      //seqSelDetDiv.appendChild(selInfospan);
     }
   }
 }
 //helper method for clearing selection (making selection array zero, removing DOM children elements)
-function clearAllSelection(){
-  ds.clearSelection();
+function clearAllSelection(widgetIndex){
+  dsArr[widgetIndex].clearSelection();
   $('.ds-selected').remove();
   arrDisp.length=0;
-  updateSelDisplay();
-  updateCurrSelection('','','startIndex',0);
-  updateCurrSelection('','','endIndex',0);
+  updateSelDisplay(widgetIndex);
+  updateCurrSelection('','','startIndex','clear',widgetIndex);
+  updateCurrSelection('','','endIndex','clear',widgetIndex);
 
 }
 //split selection array into consecutive subarrays; called when selection is made
-function calibrateDisp(sel){
+function calibrateDisp(widgetIndex){
+  //console.log(widgetIndex);
   objArrKeyIndex = -1;
   //reset array
   arrDisp=[];
 
   var arrSorted = [];
-  var len=sel.length;
+  var len=dsArr[widgetIndex].getSelection().length;
   var currKey;
   var prevKey;
 
   //1. sort Array
   for(var i=0; i<len;i++){
-    currKey = parseKey(getKeyByValue(arrObjGlobal, sel[i].id), type);
+    //console.log(sel[i].id);
+    //var reg = /(\d+)/;
+    var reg = /pdb(\d*)_[^_]*/;
+    //regex.exec(selection[selection.length-1].id)[1]
+    //console.log(reg.exec(dsArr[widgetIndex].getSelection()[i].id));
+    currKey = parseKey(getKeyByValue(objSelArr[widgetIndex], reg.exec(dsArr[widgetIndex].getSelection()[i].id)[0]), type);
     arrSorted.push(currKey);
   }
   arrSorted.sort(function (a, b) {  return a - b;  });
@@ -447,6 +784,8 @@ function calibrateDisp(sel){
       }
     }
 
+    arrDispArr[widgetIndex] = [];
+    arrDispArr[widgetIndex] = arrDisp;
 
   }
   //console.log(arrDisp);
@@ -455,12 +794,15 @@ function parseKey(text, type){
   //instead of type, use general 3 letters for residue name?
   var reg;
   if(type=='res'){
-    reg = new RegExp('\\w{3}(\\d+)', 'g');
+    //console.log(text);
+    //reg = new RegExp('\\w{1,3}(\\d+)', 'g');
+    reg = /(.+)\s(.+)/;
   }
 
-  //console.log(text);
-  var res = parseInt(reg.exec(text)[1]);
-  //console.log(res);
+  //console.log("text to parse: "+text);
+  //console.log("reg to parse: "+reg);
+  var res = parseInt(reg.exec(text)[2]);
+  //console.log("result: "+res);
   return res;
 
 }
@@ -474,104 +816,25 @@ function getKeyByValue(arr, value) {
   }
   //return Object.keys(arr).find(key => arr[key] === value);
 }
-function getDeepKeys(obj) {
-    var keys = [];
-    for(var key in obj) {
-        keys.push(key);
-        if(typeof obj[key] === 'object') {
-            var subkeys = getDeepKeys(obj[key]);
-            keys = keys.concat(subkeys.map(function(subkey) {
-                return key + '.' + subkey;
-            }));
-        }
-    }
-    return keys;
-}
-//console.log(getDeepKeys(arrObjGlobal));
-//console.log(arrObjGlobal.find());
-//add clear selection functionality
-var btn = document.getElementById('clearSelection');
-btn.addEventListener('click',function(e){
-  clearAllSelection();
-});
-var barMarker = document.getElementById('marker');
-//add marker to follow mouse in div
-seqDiv.addEventListener('mousemove', function(e){
-  seqDivFlag = true;
-  var seqDivPosition = getPosition(seqDiv);
-  //console.log('mousein '+ (e.pageX - seqDivPosition.x));
-  barMarker.style.display = 'block';
-  barMarker.style.left = (e.pageX - seqDivPosition.x)+'px';
-  locatorBox.style.display = 'inline-block';
-  displayLocator(getIndexByWidth(e.pageX - seqDivPosition.x));
 
-});
-var seqDivFlag = false;
-seqDiv.addEventListener('mouseleave',function(e){
-  seqDivFlag = false;
-  //console.log('mouseout '+e.clientX);
-  barMarker.style.display = 'none';
-  locatorDiv.style.display = 'none';
-});
-//listen to right-click
-seqDiv.addEventListener('contextmenu',function(e){
-  //clearAllSelection();
-  seqDiv.focus();
-});
 
-//make keypress event general (only open if there exists a value to be zoomed in on)
-document.addEventListener('keydown',function(e){
-
-  if(e.shiftKey && seqDivFlag){
-    zoomPress = true;
-    //console.log('we here');
-    zoomDiv.style.display = 'block';
-    if(parseInt(locatorBox.innerText) < arrObjGlobal.length){
-
-      var info = Object.keys(arrObjGlobal[parseInt(locatorBox.innerText)])[0];
-      populateZoomDiv(info);
-    }
-    //console.log(info);
-
-    //console.log(resname + ' ' + resid);
-
+  function displayLocator(loc, widgetIndex){
+    locatorDivArr[widgetIndex].style.display='block';
+    locatorBoxArr[widgetIndex].innerText=loc;
   }
-
-
-
-});
-//can't just listen to keyup
-document.addEventListener('keyup',function(e){
-  if(zoomPress){
-    //remove 'zoomed' class from primary seq
-    for(var i = 0; i < zoomArr.length; i++){
-      //document.getElementById(zoomArr[i]).classList.remove('zoomed-middle');
-      document.getElementById(zoomArr[i]).classList.remove('zoomed-lefthook');
-      document.getElementById(zoomArr[i]).classList.remove('zoomed-righthook');
-    }
-    zoomArr = [];
-    //console.log('we out');
-    zoomDiv.style.display = 'none';
-    zoomPress = false;
+  function getIndexByWidth(x, widgetIndex){
+    return Math.ceil(x/eltWidthArr[widgetIndex]);
   }
-
-});
-  function displayLocator(loc){
-    locatorDiv.style.display='block';
-    locatorBox.innerText=loc;
-  }
-  function getIndexByWidth(x){
-    return Math.ceil(x/eltWidth);
-  }
-  function populateZoomDiv(val){
+  function populateZoomDiv(val, widgetIndex){
     //clear children except selector box
-    while(zoomDiv.children.length>1){
-      zoomDiv.removeChild(zoomDiv.lastChild);
+    while(zoomDivArr[widgetIndex].children.length>1){
+      zoomDivArr[widgetIndex].removeChild(zoomDivArr[widgetIndex].lastChild);
     }
     var zoomRangeLeft;
     var zoomRangeWidth;
     //SUBJECT TO CHANGE
-    var reg = /(\w{3})(\d+)/;
+    //var reg = /(\w{1,3})(\d+)/;
+    var reg = /(.+)\s(\d+)/;
     var resname = reg.exec(val)[1];
     var resid = parseInt(reg.exec(val)[2]);
 
@@ -581,18 +844,18 @@ document.addEventListener('keyup',function(e){
       lorange = 0;
     }
     var hirange = resid + 5;
-    if(hirange > arrObjGlobal.length){
-      hirange = arrObjGlobal.length;
+    if(hirange > objSelArr[widgetIndex].length){
+      hirange = objSelArr[widgetIndex].length;
     }
     for(var i = lorange; i<hirange;i++){
       var resZoom = document.createElement('span');
       resZoom.className = 'res';
-      var info  = Object.keys(arrObjGlobal[i])[0];
+      var info  = Object.keys(objSelArr[widgetIndex][i])[0];
       resname = reg.exec(info)[1];
       resid = parseInt(reg.exec(info)[2]);
       resZoom.innerText = resname + '\n' + resid;
-      var id = Object.values(arrObjGlobal[i])[0];
-      resZoom.id = id+'zoomed';
+      var id = Object.values(objSelArr[widgetIndex][i])[0];
+      resZoom.id = id+'_zoomed' ;
       resZoom.style.height = '30px';
       resZoom.style.width = '30px';
       resZoom.style.fontSize = '14px';
@@ -600,14 +863,14 @@ document.addEventListener('keyup',function(e){
       resZoom.style.border = '1px solid black';
       // resZoom.style.lineHeight = '30px';
       //resZoom.style.top = '30%';
-      zoomDiv.appendChild(resZoom);
-      zoomds.addSelectables(resZoom);
+      zoomDivArr[widgetIndex].appendChild(resZoom);
+      zoomdsArr[widgetIndex].addSelectables(resZoom);
 
       //mirror because spawning these new spans are called after selection in primary seq div
       var mirrorItem = document.getElementById(id);
-      // console.log(id);
+
       if(mirrorItem.className.includes('ds-selected')){
-        mirror(mirrorItem,"select");
+        mirror(mirrorItem,"select", widgetIndex);
       }
       if(i==lorange){
         mirrorItem.classList.add('zoomed-lefthook');
@@ -621,11 +884,11 @@ document.addEventListener('keyup',function(e){
       else{
         //mirrorItem.classList.add('zoomed-middle');
       }
-      //add to zoom arr
+      //add to zoom arr (use push instead of assignment b/c i is not zero-indexed)
       zoomArr.push(id);
 
-
     }
+    zoomMasterArr[widgetIndex] = zoomArr;
     // //create visual range in primary seq div
     // var zoomRange = document.createElement('div');
     // zoomRange.classList.add('res');
@@ -673,7 +936,8 @@ function getPosition(el) {
   };
 }
 
+//}//end of loadbool conditional
 
-  //ds.addSelection(document.getElementById(arrObjGlobal[3][1].id))
+
 
 } );//end of jQuery.ready()
