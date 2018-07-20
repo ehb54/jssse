@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>jQuery UI Widget Intro</title>
+    <title>JSSSE Widget</title>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- <script src="https://thibaultjanbeyer.github.io/DragSelect/ds.min.js"></script> -->
@@ -12,22 +12,55 @@
       <!-- <link rel="stylesheet" href="http:///resources/demos/style.css"> -->
       <!-- <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> -->
       <link rel="stylesheet" href="widgetStyle.css">
-      <script src="widgetJS.js"></script>
-      <script src="node_modules/dragselect/src/DragSelect.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+      <script src="bundle.js"></script>
+      <!-- <script src = "arrDispArrTest.js"></script> -->
+
+      <script src="./node_modules/dragselect/src/DragSelect.js"></script>
 
 
 
   </head>
   <body>
-    <!-- <div class="progressbar"></div> -->
-    <!-- <div id="my-widget1" title="Widget Draft 1 (ignore)">
-      <p>Default Text Here</p>
-      <p>Another paragraph</p>
+  <label class="custom-file-upload" style="  border: 1px solid #ccc; display: inline-block; padding: 6px 12px; cursor: pointer;">
+    <input type="file" id="files" name="files[]" style="display:none;" multiple />
+    Select PDB File
+</label>
+  <output id="fileInfo"></output>
+
+  <!-- OUTLINE OF DRAGSELECT -->
+    <!-- <div style="text-align:center;" class="widget-container">
+      <div class="sequenceContainer">
+        <div class="sequenceDiv" tabindex="0">
+          <div class="marker"></div>
+          <div class="customSelector"></div>
+          <div class="locatorDiv">
+            <div class="locatorBox"></div>
+          </div>
+        </div>
+        <div class="zoomDiv"></div>
+      </div>
+    <div class="sequenceSelInfoDiv" style="display:inline-block;text-align:center;">
+      <div>
+        <strong>CURRENT SELECTION</strong>
+        <div style="text-align:center;"><button class="clearSelection" >Clear Selection</button></div>
+        <span>START </span>
+        <span class="startIndex"></span>
+        <span> : END </span>
+        <span class="endIndex"></span>
+      </div>
+      <div class="selectDisplay">
+        <div class="selectDisplayRange"></div>
+        <div class="selectDisplayDetails"></div>
+      </div>
+
     </div>
-  <div id="my-widget2" title="Widget Draft 1 (ignore)">Div 2</div> -->
-  <!-- <input type="file" id="files" name="files[]" multiple /> -->
-  <!-- <output id="list"></output> -->
-  <div id="sequenceContainer">
+  </div> -->
+
+
+  <!-- OLD DRAGSELECT LAYOUT WITH ID's (INSTEAD OF CLASSES) -->
+  <!-- <div id="sequenceContainer">
     <div class="sequenceDiv" id="sequenceDiv" tabindex="0">
       <div id="marker"></div>
       <div id="customSelector"></div>
@@ -56,7 +89,29 @@
       </div>
 
     </div>
-  </div>
+  </div> -->
+<!--  BOARD-->
+  <div class="board">
+      <div class="PDB_viewer">
+        <div class = 'handle'>
+          <p>PDB Viewer</p>
+          <button class="btn close" ><i class="fa fa-close"></i></button>
+        </div>
+      </div>
+      <div class = "SSE sortable" id='sobj1'>
+        <div class = 'handle'>
+          <p>SOBJ1</p>
+          <button class="btn close" ><i class="fa fa-close"></i></button>
+        </div>
+      </div>
+      <div class = "SSE sortable" id='sobj2'>
+        <div class = 'handle'>
+          <p>SOBJ2</p>
+          <button class="btn close" ><i class="fa fa-close"></i></button>
+        </div>
+      </div>
+      <div id="builder-canvas">Build Canvas</div>
+    </div>
 
 
   </body>
