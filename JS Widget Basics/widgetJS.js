@@ -17,77 +17,71 @@ $( function() {
     var readBool = false;
     var numPDB = 0;
     var loadBool = false;
-    //handling local files
-    function handleFileSelect(e) {
+    var infoArr;
 
-      var files = e.target.files; // FileList object (list of File objects)
-      //var file = files[0];
 
-      //display info to HTML
-      var output = [];
-      var j=0;
-      for (var i = 0, f; f = files[i]; i++) {
-        numPDB++;
-        console.log(i);
-        (function(file) {
-        var reader = new FileReader();
-        reader.onload = function (evt){
+    //use Promises to wait until async operation is finished (initialize + populate windows correctly)
+    function readFile(file) {
+        return new Promise(function(resolve, reject) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                resolve(e.target.result);
+            };
+            reader.onerror = reader.onabort = reject;
+            reader.readAsText(file);
+        });
+    }
+    function readmultifiles(files) {
+        var results = [];
+        files.reduce(function(p, file) {
+            return p.then(function() {
+                return readFile(file).then(function(data) {
+                    // put this result into the results array
+                    results.push(data);
+                });
+            });
+        }, Promise.resolve()).then(function() {
+            // make final resolved value be the results array
+            //console.log(results);
 
-          //display file INFORMATION
-
-            console.log(j);
-            //create JSSSE objects for information to be read into
-            jssseArr[j] = Object.create(SasMol.SasMol);
-            //store read information inside jssse objects
-            //grabs info
-            info = evt.target.result;
-            // console.log(info);
-            jssseArr[j].readPDB(info);
+            //populate JSSSE objects and canvas windows
             readBool = true;
-            numAtomsArr[j] = jssseArr[j].getAtom().length;
-            console.log(jssseArr[j].getAtom().length);
-            //only initialize if there is valid PDB to be read
-            //if(firstRead && (num != 0)){
-            // if(num!=0){
-            //   populateWindows(sobjArr);
-            //   initialize('start', jssseArr[i],numPDB-1);
-            // }
-            // else{
-            //   initialize('reload',jssseArr[i],numPDB-1);
-            // }
-            // firstRead = false;
-            readBool = true;
+            numPDB = results.length;
+            var info = "";
+            for(var i = 0; i<numPDB;i++){
+              info = results[i];
+              jssseArr[i] = Object.create(SasMol.SasMol);
+              //store read information inside jssse objects
+              jssseArr[i].readPDB(info);
 
-            //html stuff for display
-            output.push('<li><strong>', escape(file.name), '</strong> (', file.type || 'n/a', ') - ',
-            file.size, ' bytes, last modified: ',
-            file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() : 'n/a',
-            '</li>');
+              numAtomsArr[i] = jssseArr[i].getAtom().length;
+              // console.log(jssseArr[i].getName());
 
-            j++;
-          }
+            }
 
-        document.getElementById('fileInfo').innerHTML = '<ul>' + output.join('') + '</ul>';
-
-        reader.onerror = function(){
-          //default readBool to false if somehow the reader onload event is not fired or there is an error
-          readBool = false;
-          console.log('FileReader error with reading file');
-        }
-
-        reader.readAsText(file);
-        })(f);
+            populateWindows(sobjArr);
+            for(var i = 0; i<numPDB;i++){
+              initialize('start', jssseArr[i],i);
+            }
+            return results;
+        });
+    }
+    // sample usage
+    function handleRead(e){
+      var files = e.target.files;
+      var fileArr = [];
+      var infoArr;
+      //convert fileList to array of files
+      for(var i = 0,f;f=files[i];i++){
+        fileArr[i]=f;
       }
-      //populate stuff
-
-      populateWindows(sobjArr);
-      for(var i = 0;i<numPDB;i++){
-
-        initialize('start', jssseArr[i],i);
-      }
+      //console.log(fileArr);
+      //infoArr gets assigned text format of all read files
+      readmultifiles(fileArr);
 
     }
-    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+    document.getElementById('files').addEventListener('change', handleRead, false);
 
     var obj1 = Object.create(SasMol.SasMol);
     var obj2 = Object.create(SasMol.SasMol);
@@ -128,12 +122,10 @@ $( function() {
   // });
 
   function populateWindows(sobjArr){
-    //console.log(sobjID);
 
     //create div elt's
     for(var i = 0; i < numPDB; i++){
       var sobj = document.getElementById(sobjArr[i]);
-      console.log(sobj);
       //main sequence display
       var widgetContainer = document.createElement('div');
       //widgetContainer.style.textAlign = 'center';
@@ -226,6 +218,9 @@ $( function() {
       //add marker to follow mouse in div
       sequenceDiv.addEventListener('mousemove', function(e){
         seqDivFlag = true;
+        var activeElt = document.activeElement;
+
+
         var seqDivPosition = getPosition(sequenceDiv);
         //console.log('mousein '+ (e.pageX - seqDivPosition.x));
         marker.style.display = 'block';
@@ -233,11 +228,12 @@ $( function() {
         locatorBox.style.display = 'inline-block';
 
         //only display locator if there's a valid PDB being read
-        if(readBool){
-          //console.log(e.pageX - seqDivPosition.x);
-          displayLocator(getIndexByWidth(e.pageX - seqDivPosition.x, widgetIndex), widgetIndex);
-        }
 
+        var reg = /(\d)/;
+
+        var widgetIndex = reg.exec(activeElt.id)[1];
+        console.log(widgetIndex);
+        displayLocator(getIndexByWidth(e.pageX - seqDivPosition.x, widgetIndex), widgetIndex);
       });
 
       sequenceDiv.addEventListener('mouseleave',function(e){
@@ -248,11 +244,15 @@ $( function() {
       });
       //listen to right-click
       sequenceDiv.addEventListener('contextmenu',function(e){
+        console.log(e.target);
         //clearAllSelection();
         sequenceDiv.focus();
       });
 
-
+      //focus on first elt
+      if(i==0){
+        sequenceDiv.focus();
+      }
 
 
 
@@ -287,7 +287,7 @@ document.addEventListener('keydown',function(e){
     //extract id
     var reg = /(\d)/;
     var widgetIndex = reg.exec(activeElt.id)[1];
-    //console.log(widgetIndex);
+    console.log(widgetIndex);
 
     zoomDivArr[widgetIndex].style.display = 'block';
     if((parseInt(locatorBoxArr[widgetIndex].innerText) < objSelArr[widgetIndex].length)){
