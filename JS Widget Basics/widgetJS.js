@@ -21,6 +21,7 @@ $( function() {
 
 
     //use Promises to wait until async operation is finished (initialize + populate windows correctly)
+    //src: https://stackoverflow.com/questions/41906697/how-to-determine-that-all-the-files-have-been-read-and-resolve-a-promise/
     function readFile(file) {
         return new Promise(function(resolve, reject) {
             var reader = new FileReader();

@@ -276,7 +276,7 @@ function mirror(item,type){
   }
   else if(type =="select"){
     ds.addSelection(document.getElementById(equivID));
-    console.log(document.getElementById('zoomDiv').childNodes);
+    //console.log(document.getElementById('zoomDiv').childNodes);
     if(document.getElementById('zoomDiv').childNodes.length > 2){
     // if(zoomds.getSelection().length !=0){
 
@@ -304,7 +304,7 @@ function arrUpdate(val, option){
     var objArrKey = 'arr'+objArrKeyIndex;
     arrDisp[objArrKeyIndex][objArrKey].push(val);
   }
-  //console.log(arrDisp)
+  console.log(arrDisp)
   //console.log(arrDisp[0]['arr'+objArrKeyIndex]);
   //console.log('length: '+arrDisp.length);
 }
@@ -404,6 +404,7 @@ function calibrateDisp(sel, widgetIndex){
     var reg = /(.{10})/;
     //console.log(reg.exec(sel[i].id)[1]);
     currKey = parseKey(getKeyByValue(arrObjGlobal, reg.exec(sel[i].id)[1]), type);
+    // console.log(currKey);
     arrSorted.push(currKey);
   }
   arrSorted.sort(function (a, b) {  return a - b;  });

@@ -1,0 +1,209 @@
+.body{
+  /*make text unselectable*/
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
+}
+* { user-select: none; }
+.sequenceDiv{
+  height:50px;
+  position:relative;
+  border:2px solid black;
+}
+.zoomDiv{
+  height:50px;
+  display: none;
+  border: 2px solid black;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+
+}
+.sequenceSelInfoDiv{
+  /* display: none; */
+  height:75px;
+  border: 2px solid black;
+  text-align: center;
+  font-size: 12px;
+}
+.locatorDiv{
+  top:40%;
+  left:10px;
+  position:absolute;
+  display: none;
+  /*left: VARIABLE
+  width: VARIABLE*/
+  /* height:60px; */
+  z-index: 5;
+  -webkit-box-sizing: border-box;
+  display: block;
+}
+.locatorBox{
+  border: 2px solid blue;
+  display: none;
+  position:absolute;
+}
+.marker{
+  position:absolute;
+  border-width: 1px 0px 1px 1px;
+  border-style: solid;
+  border-color: lightgray;
+  top:0px;
+  width:0px;
+  height:100%;
+  display:none;
+  float:left;
+}
+
+.resizer{
+  z-index: 10;
+  position: absolute;
+  top:1px;
+  height:11px;
+  /* height:100%; */
+  width:9px;
+  background-color:blue;
+}
+.zoomed-middle{
+  box-shadow:0px 2px 0px 0px red;
+  box-shadow:0px -2px 0px 0px red;
+}
+.zoomed-lefthook{
+  box-shadow: -2px 0px 0px 0px red;
+}
+.zoomed-righthook{
+  box-shadow: 2px 0px 0px 0px red;
+}
+/*with dragselectJS*/
+.ds-selected {
+  color: white;
+  background-color: black;
+}
+.zoomds-selected {
+  outline: 2px solid black;
+  outline-offset: 1px;
+  font-weight: bold;
+  background-color: transparent;
+  color:black;
+}
+.customSelector{
+  position: absolute;
+  background: rgba(0, 0, 255, 0.1);
+  border: 1px solid rgba(0, 0, 255, 0.45);
+  display: none;
+  pointer-events: none;
+  /* height: 30px; */
+  left: 112px;
+  top: 0px;
+  width: 0px;
+  height:100%;
+}
+.subArray{
+  margin:10px;
+  border:1px solid black;
+}
+/*placeholder element (instead of residue)*/
+.res{
+  display:inline-block;
+   /* width:1px; */
+   height:10px;
+   text-align: center;
+   font-size:12px;
+   position:relative;
+}
+.divider{
+    position:absolute;
+    /* left:50%; */
+    top:30%;
+    bottom:20%;
+    /* border-right:1px solid black; */
+    border-left: 1px solid black;
+}
+
+/************************************************************************
+CANVAS PLAN WITH CSS GRID
+************************************************************************/
+.board {
+  display: grid;
+  /*  template: 20% for pdb viewport, rest divided equally for sobj's*/
+  grid-template-columns: 20% repeat(auto-fit, minmax(100px, 1fr)) auto ;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 5px;
+  background-color: #2196F3;
+  padding: 10px;
+  height:600px;
+  grid-template-areas:
+    'PDB_viewer SSE SSE'
+    'builder-canvas builder-canvas builder-canvas';
+}
+.board > div {
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  background-color: white;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 20px;
+}
+#builder-canvas {
+  grid-area: builder-canvas;
+  /* grid-row-start: 1;
+  grid-row-end: 3; */
+  /* grid-column-start: 1;
+  grid-column-end: 4; */
+}
+.PDB_viewer{
+  grid-area: PDB_viewer;
+}
+.SSE.sortable{
+  padding:0px;
+  /* width: 30%; */
+  display:grid;
+  grid-template-rows: 1fr 8fr 1fr;
+}
+.button-footer{
+  display:grid;
+  grid-template-columns: 8fr 1fr 1fr;
+  grid-template-areas: '. save update';
+}
+.save{
+  grid-area: save;
+}
+.update{
+  grid-area: update;
+}
+.button-footer > button {
+
+}
+.handle{
+  background-color:lightgray;
+  display: grid;
+  /*  CUSTOMIZE HERE FOR BUTTONS*/
+  grid-template-columns: 9fr 1fr;
+  grid-template-rows: 40px;
+  cursor: move;
+}
+.SSE.placeholder {
+    border: 5px dashed red;
+    background-color: gray;
+    -webkit-box-shadow: 0px 0px 10px #888;
+    -moz-box-shadow: 0px 0px 10px #888;
+    box-shadow: 0px 0px 10px #888;
+}
+.btn.close {
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.btn.close:hover {
+    background-color: DarkRed;
+}
+
+p{
+  margin:10px;
+}
