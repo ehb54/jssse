@@ -46,7 +46,7 @@ function readmultifiles(files) {
     }, Promise.resolve()).then(function() {
         // make final resolved value be the results array
         // DEMO
-        //console.log(results);
+        console.log(results);
 
         //populate JSSSE objects and canvas windows
         readBool = true;
@@ -64,7 +64,7 @@ function readmultifiles(files) {
 
         //DEMO
         for(var i = 0; i<numPDB;i++){
-          populateWindows(sobjArr[i]);
+          populateWindows(sobjArr[i], jssseArr[i]);
           initialize('start', jssseArr[i],i);
         }
         return results;
@@ -142,7 +142,7 @@ document.getElementById('files').addEventListener('change', handleRead, false);
  * Populates windows attached to sobj's (all HTML necessary for sequence divs, feedback box, zoom div)
  * @param  {String} sobjID [description]
  */
-  function populateWindows(sobjID){
+  function populateWindows(sobjID, object){
     //console.log(sobjID);
     var sobjContent = document.getElementById(sobjID+' content');
     //create div elt's
@@ -278,7 +278,20 @@ document.getElementById('files').addEventListener('change', handleRead, false);
       // seqSelDivArr[i] = selectDisplay;
       seqSelRangeDivArr[i] = selectDisplayRange;
 
+
+
     }
+    //populate PDB memory box
+    // var output = [];
+    // //SUBJECT TO CHANGE (after implementing read MODEL/chain)
+    // output.push('<ul>', escape('CHAIN A'));
+    // for(var i = 0; i<object.getAtom().length; i++){
+    //   //iterate through atoms and display in bullets
+    //   output.push('<li>', escape(object.getAtom()[i]), '</li>');
+    // }
+    // //end of ul
+    // output.push('</ul>');
+    // document.getElementById('pdb_memory').innerHTML = '<ul>' + output.join('') + '</ul>';
     //(Debugging purposes)
     loadBool = true;
   }
@@ -525,6 +538,7 @@ document.addEventListener('keyup',function(e){
  * @param  {[DOM Node]} item        [HTML node to be mirrored (template)]
  * @param  {String} type            [type of action - select or unselect]
  * @param  {Number} sobjIndex       [sobj Index]
+* @example
  */
 function mirror(item,type, sobjIndex){
   var zoomSel = zoomdsArr[sobjIndex].getSelection();

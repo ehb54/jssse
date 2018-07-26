@@ -27,4 +27,17 @@ jssse.createBoard = function( id, options) {
   //default value
   options.columns = 2;
   enableLoad = false;
+
+  //create bobj
+  bobj = Object.create(bobj);
+  bobj.id = id;
+  bobj.options = options;
+
+  return bobj;
 }
+
+/**
+ * MAIN
+ */
+
+module.exports = {jssse, sobj};

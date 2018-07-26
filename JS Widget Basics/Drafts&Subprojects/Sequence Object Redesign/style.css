@@ -130,7 +130,8 @@ CANVAS PLAN WITH CSS GRID
 .board {
   display: grid;
   /*  template: 20% for pdb viewport, rest divided equally for sobj's*/
-  grid-template-columns: 20% repeat(auto-fit, minmax(100px, 1fr)) auto ;
+  /* grid-template-columns: 20% repeat(auto-fit, minmax(100px, 1fr)) auto ; */
+  grid-template-columns: 20% 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-gap: 5px;
   background-color: #2196F3;
