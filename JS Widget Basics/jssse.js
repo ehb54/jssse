@@ -1,5 +1,5 @@
-//bring in SasMol
-var SasMol = require('./SASMOL\ JS/sasmol.js');
+//bring in SasMol (bundled with browserify)
+var SasMol = require('./SASMOL\ JS/sasmol-bundle.js');
 /**
  * bobj definition
  * @namespace

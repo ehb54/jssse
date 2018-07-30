@@ -258,7 +258,6 @@ SasMol.readPDB = function(inputStr){
         elementArr.push(result[14]);
         chargeArr.push(result[15]);
         segnameArr.push(result[13]);
-
         //use setters
        this.atom(atomArr);
        this.name(nameArr);

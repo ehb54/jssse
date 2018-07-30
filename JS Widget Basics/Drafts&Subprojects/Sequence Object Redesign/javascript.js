@@ -46,7 +46,7 @@ function readmultifiles(files) {
     }, Promise.resolve()).then(function() {
         // make final resolved value be the results array
         // DEMO
-        console.log(results);
+        //console.log(results);
 
         //populate JSSSE objects and canvas windows
         readBool = true;
@@ -70,7 +70,7 @@ function readmultifiles(files) {
         return results;
     });
 }
-// sample usage
+
 function handleRead(e){
   var files = e.target.files;
   var fileArr = [];
@@ -81,15 +81,18 @@ function handleRead(e){
   readmultifiles(fileArr);
 
 }
-//listen to when user inputs files
+//listen to when user inputs file(s) (event is triggered once user inputs file(s))
 document.getElementById('files').addEventListener('change', handleRead, false);
 
 
 
 
-    /**************************************************************************
-      DEVELOPER CODE
-      *************************************************************************/
+    /*
+  ____  ____  _  _  ____  __     __  ____  ____  ____     ___  __  ____  ____
+(    \(  __)/ )( \(  __)(  )   /  \(  _ \(  __)(  _ \   / __)/  \(    \(  __)
+ ) D ( ) _) \ \/ / ) _) / (_/\(  O )) __/ ) _)  )   /  ( (__(  O )) D ( ) _)
+(____/(____) \__/ (____)\____/ \__/(__)  (____)(__\_)   \___)\__/(____/(____)
+    */
 // GLOBAL VARIABLES FOR keeping track of HTML within (potentially) multiple SOBJ's
 
    //access DOM elt's by classname (not id because they are not unique - multiple selects)
@@ -120,7 +123,7 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
 
 //CREATE SEQUENCE OBJECT
-
+//makes sobj's jquery-sortable (replacable when dragged over each other)
       $(".board")
       .sortable({
         items: ".sortable",
@@ -132,15 +135,12 @@ document.getElementById('files').addEventListener('change', handleRead, false);
         cursor: 'move'
       });
     var closeButtons = document.getElementsByClassName('close');
-    var board = document.getElementById('board');
-      closeButtons[0].addEventListener('click', function(e){
-        //logic to close window (UNDER DEVELOPMENT)
-        console.log(e.target);
-      });
+    //ADD EVENT LISTENERS TO DO THINGS WITH CLOSE BUTTON
 
 /**
  * Populates windows attached to sobj's (all HTML necessary for sequence divs, feedback box, zoom div)
  * @param  {String} sobjID [description]
+ * @param {sasmol}
  */
   function populateWindows(sobjID, object){
     //console.log(sobjID);
@@ -264,6 +264,84 @@ document.getElementById('files').addEventListener('change', handleRead, false);
         sequenceDiv.focus();
       });
 
+      //what to do when update is clicked - make copy of current selection into a jQuery-droppable object
+      document.getElementsByClassName('btn update')[0].addEventListener('click', function(e){
+        //clear seqPieces first
+        $('#seqPiece'+sobjIndex).remove();
+        $('#drop'+sobjIndex).remove();
+        console.log(JSON.stringify(arrDisp));
+        var seqPiece = document.createElement('div');
+        seqPiece.classList.add('seqPiece');
+        seqPiece.id = 'seqPiece'+sobjIndex;
+        var text = document.createTextNode(JSON.stringify(arrDisp));
+        seqPiece.appendChild(text);
+        sobjContent.appendChild(seqPiece);
+
+        var dropDiv = document.createElement('div');
+        dropDiv.classList.add('drop');
+        dropDiv.id = 'drop'+sobjIndex;
+
+        document.getElementById('builder-canvas').appendChild(dropDiv);
+        $('.drop').droppable({
+            tolerance: 'intersect',
+            drop: function(event, ui) {
+                var drop_p = $(this).offset();
+                var drag_p = ui.draggable.offset();
+                var left_end = drop_p.left - drag_p.left + 1;
+                var top_end = drop_p.top - drag_p.top + 1;
+                ui.draggable.animate({
+                    top: '+=' + top_end,
+                    left: '+=' + left_end
+                });
+            }
+        });
+        $('#seqPiece'+sobjIndex).draggable({
+            revert: 'invalid',
+            scroll: false,
+            stack: ".seqPiece"
+        });
+      });
+
+      //MAKE MODULAR + ADD MORE ELEMENTS
+      var sasmolInfoDiv = document.createElement('div');
+
+      function populateSasMolInfo(param){
+        var propDiv = document.createElement('div');
+        var propInfo = document.createElement('div');
+        var propCheckBox = document.createElement('input');
+        var propTitle = document.createTextNode(param.title + ': ');
+        var propText = document.createTextNode(param.info);
+        propDiv.style.textAlign = 'left';
+        propInfo.appendChild(propText);
+        propInfo.style.display = 'none'
+        propCheckBox.type = 'checkbox';
+        propCheckBox.id = 'propCheckBox'+sobjIndex;
+        propDiv.appendChild(propCheckBox);
+        propDiv.appendChild(propTitle);
+        propDiv.appendChild(propInfo);
+
+        sasmolInfoDiv.appendChild(propDiv);
+        sobjContent.appendChild(sasmolInfoDiv);
+        //toggles display on or off based on if the checkbox is ticked
+        propCheckBox.addEventListener('click', function(e){
+          if(!propCheckBox.checked){
+            propInfo.style.display = 'none'
+          }
+          else{
+            propInfo.style.display = 'block';
+          }
+        });
+      }
+      var segnameObj = {
+        title: 'SEGNAME',
+        info: JSON.stringify(object.getSegname())
+      };
+      var betaObj = {
+        title: 'BETA',
+        info: JSON.stringify(object.getBeta())
+      };
+      populateSasMolInfo(segnameObj);
+      populateSasMolInfo(betaObj);
 
 
       //push to arrays
@@ -272,7 +350,6 @@ document.getElementById('files').addEventListener('change', handleRead, false);
       seqDivArr[i] = sequenceDiv;
       locatorDivArr[i] = locatorDiv;
       locatorBoxArr[i] = locatorBox;
-    //  console.log(i);
 
       zoomDivArr[i] = zoomDiv;
       // seqSelDivArr[i] = selectDisplay;
@@ -282,16 +359,17 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
     }
     //populate PDB memory box
-    // var output = [];
-    // //SUBJECT TO CHANGE (after implementing read MODEL/chain)
-    // output.push('<ul>', escape('CHAIN A'));
-    // for(var i = 0; i<object.getAtom().length; i++){
-    //   //iterate through atoms and display in bullets
-    //   output.push('<li>', escape(object.getAtom()[i]), '</li>');
-    // }
-    // //end of ul
-    // output.push('</ul>');
-    // document.getElementById('pdb_memory').innerHTML = '<ul>' + output.join('') + '</ul>';
+    var output = [];
+    //SUBJECT TO CHANGE
+    //ex: chain A is hardcoded (future goal: make modular after implementing read MODEL/chain)
+    output.push('<li>', 'chain A','<ul>');
+    for(var i = 0; i<numAtomsArr[sobjIndex]; i++){
+      //iterate through atoms and display in bullets
+      output.push('<li>', object.getAtom()[i], '</li>');
+    }
+    //end of ul
+    output.push('</ul>','</li>');
+    document.getElementById('pdb_memory').innerHTML = '<ul>' + output.join('') + '</ul>';
     //(Debugging purposes)
     loadBool = true;
   }
@@ -340,9 +418,7 @@ document.addEventListener('keyup',function(e){
 });
 
 
-
-
-//initialize residues inside divs
+//initialize sequence objects inside divs
   function initialize(action, object, sobjIndex){
     var seqDiv = seqDivArr[sobjIndex];
     seqObjArr[sobjIndex] = [];
@@ -382,11 +458,11 @@ document.addEventListener('keyup',function(e){
       //newSpan.id = i;
       seqDiv.appendChild(newSpan);
 
-      //if(i==0){console.log(newSpan.offsetLeft);}
+
       //insert dividers
       var newDivider = document.createElement('div');
       newDivider.className = 'divider';
-
+      //logic for how limits on dividers
       if(num <= 20 && i<num){
         createDivider();
       }
@@ -433,8 +509,6 @@ document.addEventListener('keyup',function(e){
         },
         onDragStart: function(e){
           var selection = dsArr[sobjIndex].getSelection();
-          //console.log(selection);
-          //var firstElt = selection[0].id;
           //only do computations if there selection array isn't empty
           if(selection.length>0){
             var lastEltID = selection[selection.length-1].id;
@@ -478,7 +552,6 @@ document.addEventListener('keyup',function(e){
           //only do computations if there selection array isn't empty
           if(selection.length>0){
             var lastEltID = selection[selection.length-1].id;
-            //console.log("lastELt: "+lastElt);
             var obj = getObjectByValue(seqObjArr[sobjIndex], lastEltID);
 
             updateCurrSelection('endIndex', obj, sobjIndex);
@@ -486,8 +559,6 @@ document.addEventListener('keyup',function(e){
         },
         onDragStart: function(e){
           var selection = zoomdsArr[sobjIndex].getSelection();
-          //console.log(selection);
-          //var firstElt = selection[0].id;
           //only do computations if there selection array isn't empty
           if(selection.length>0){
             var lastEltID = selection[selection.length-1].id;
@@ -524,7 +595,7 @@ document.addEventListener('keyup',function(e){
       dsArr[sobjIndex] = ds;
       zoomdsArr[sobjIndex] = zoomds;
 
-      widgetContainerArr[sobjIndex].style.position = 'absolute';
+      //widgetContainerArr[sobjIndex].style.position = 'absolute';
   }
 
 

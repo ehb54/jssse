@@ -51,10 +51,11 @@
 //     }
 //   }
 // });
+
+var temp = 1;
 $(function(){
   var dsArr = [];
   var widgetIndex = 0;
-  var temp = 1;
   function init(){
     var ds = new DragSelect({
       selectables: document.getElementById('container1').querySelectorAll('.item'),
@@ -94,7 +95,7 @@ $(function(){
 
     });
     document.getElementById('container2').addEventListener('mousemove',function(e){
-      console.log(e.pageX);
+      //console.log(e.pageX);
     });
   }
   limitedScope(2);

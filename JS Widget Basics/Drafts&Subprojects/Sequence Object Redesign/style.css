@@ -208,3 +208,18 @@ CANVAS PLAN WITH CSS GRID
 p{
   margin:10px;
 }
+.drop{
+  height:18px;
+  width: 398px;
+  border:2px dashed #0C5F8B;
+  background-color: gray;
+  float:left;
+}
+.seqPiece{
+  height:20px;
+  width: 400px;
+  font-size: 10px;
+  float:left;
+  color:white;
+  background-color: black;
+}
