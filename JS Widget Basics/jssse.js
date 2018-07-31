@@ -1,7 +1,15 @@
-//bring in SasMol (bundled with browserify)
-var SasMol = require('./SASMOL\ JS/sasmol-bundle.js');
 /**
- * bobj definition
+ * @fileoverview Class Definition of JSSSE, bobj, and sobj
+ */
+/**
+ * @module JSSSE
+ */
+//bring in SasMol (bundled with browserify) - use to do pdb parsing here instead of main widgetJS.js file?
+var SasMol = require('./SASMOL\ JS/sasmol.js');
+
+
+/**
+ * bobj definition (doesn't really matter what values are initialized to the fields because everything is loosely defined in JS)
  * @namespace
  * @property {string}   id        value passed to jssse.createBoard() and used as the parent DOM element for display
  * @property {number}   columns   number of sobjs to display per row
@@ -10,15 +18,18 @@ var SasMol = require('./SASMOL\ JS/sasmol-bundle.js');
  * @property {event[]}  undo      the array of events used for undo and redo
  * @property {number}   undoPos   position of current state in undo array
  * @property {boolean}  busy      set if events are processing
+ * @property {number}   sobjIndex index of sobj to be created (next)
  */
 var bobj = {
-  id,
-  columns,
-  sobjs,
-  events,
-  undo,
-  undoPos,
-  busy
+  id : "",
+  columns : 0,
+  sobjs : [],
+  events : [{}],
+  undo : [{}],
+  undoPos : 0,
+  busy : true,
+
+  sobjIndex : 0
 }
 
 /**
@@ -30,14 +41,16 @@ var bobj = {
  * @property {bool}     valid     set to true if the load is complete
  * @property {bobj}     bobj      references parent bobj
  * @property {Object}   options   current options
+ * @property {SasMol}   sasmol    attached sasmol object
  */
 var sobj = {
-  id,
-  source,
-  data,
-  valid,
-  bobj,
-  options
+  id : "",
+  source : "",
+  data : {},
+  valid : false,
+  bobj : {},
+  options : {},
+  sasmol : {}
 }
 /**
  * JSSSE Object definition
@@ -49,7 +62,6 @@ var jssse = {
 }
 /**
  * creates a bobj object associated with the given DOM id
- * @func
  * @memberof jssse
  * @param {string}  id          DOM id
  * @param {Object}  options     an object with option properties
@@ -58,16 +70,17 @@ var jssse = {
  * @return {bobj}   the bobj which will hold all the state info for this board object
  */
 jssse.createBoard = function( id, options) {
+
   //default values (detailed in API)
   options.columns = 2;
   enableLoad = false;
 
   //create bobj
-  bobj = Object.create(bobj);
-  bobj.id = id;
-  bobj.options = options;
+  var newbobj = Object.create(bobj);
+  newbobj.id = id;
+  newbobj.options = options;
 
-  return bobj;
+  return newbobj;
 }
 
 /**
@@ -108,7 +121,7 @@ jssse.redo = function( bobj, n, cb ){
  * @prop   {boolean}     canUndo  set if this event causes a change which can be undone (optional)
  * @prop   {HTML_NODE[]} selected required types: select, remove ??
  * @prop   {boolean}     undo  set by jssse.undo() to specify events that are to be undone
- * @prop   {function}    cb      call back function when event is finished, called with ( err, eventObj )
+ * @prop   {Function}    cb      call back function when event is finished, called with ( err, eventObj )
  */
 jssse.newEvent = function( bobj, eventObj ){
   // UNDER DEVELOPMENT
@@ -159,18 +172,21 @@ Y8888P  `8888Y' `8888Y' `8888Y' Y88888P   YP  YP  YP Y88888P    YP    YP   YP  `
 /**
  * creates a sobj object attached to the given bobj
  * @param  {bobj}     bobj      a bobj previously returned from bobj.createBoard
- * @param  {id}       id        a unique id for this sobj
+ * @param  {id}       id        a unique DOM id for this sobj
  * @param  {Object}   options   an object with options as defined below
  * @prop   {boolean}  readonly  flag to determine whether or not the sobj is editable
  * @return {sobj}               the sobj which will hold all the state info for this structure object
  */
 jssse.createSobj = function( bobj, id, options ){
-  sobj = Object.create(sobj);
-  sobj.id = id;
-  sobj.options = options;
+  var newSobj = Object.create(sobj);
+  newSobj.id = id;
+  newSobj.options = options;
+  newSobj.bobj = bobj;
   //push to bobj?
-  bobj.sobjs.push(sobj);
-  return sobj;
+  bobj.sobjs[bobj.sobjIndex] = newSobj;
+  //increment index so next sobj created will be pushed to the right index of the sobjs array
+  bobj.sobjIndex++;
+  return newSobj;
 }
 
 /**
@@ -262,9 +278,6 @@ jssse.copy = function( sobj, n ){
   //UNDER DEVELOPMENT
 }
 
-/**
- * MAIN
- */
 
-//export to be used in other scripts (through browserify)
-module.exports = {jssse, sobj};
+
+module.exports = {bobj, jssse, sobj};

@@ -8,60 +8,7 @@
           user-select: none; /* Non-prefixed version, currently
                                 supported by Chrome and Opera */
 }
-.custom-colorize {
-    font-size: 20px;
-    position: relative;
-    width: 100px;
-    height: 100px;
-  }
-  .sequence{
-  margin-top: 100px;
-    height: 30px;
-
-    vertical-align: middle;
-    color: black;
-    padding: 5px;
-    font-size: 16px;
-    border-color: black;
-    border-style: solid;
-
-    /*unselectable*/
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  /* #dragger {
-    border: 1px solid #000;
-    position: absolute;
-    background-color: green;
-    opacity: 0.5;
-} */
 * { user-select: none; }
-/* .res{
-
-  z-index:-1;
-  width:15px;
-  height:15px;
-  display:inline-block;
-  position:relative;
-  top:40%;
-  margin:0px 2px;
-  padding-left:5px;
-  padding-right:5px;
-  pointer-events: none;
-  border: 1px solid black;
-  font-family: Consolas, monaco, monospace;
-  text-align:center;
-  line-height:15px;
-  border:0px;
-
-  background-color: lightblue;
-  font-size: 8px;
-} */
-/*new stuff*/
 .sequenceDiv{
   height:50px;
   position:relative;
@@ -100,36 +47,6 @@
   display: none;
   position:absolute;
 }
-/*cover hover effect*/
-.locatorDiv:hover{
-  /* background-color: gray;
-  opacity: 0.8; */
-  /* cursor:not-allowed; */
-}
-.locator_rect{
-  position:absolute;
-  top:0px;
-  height:inherit;
-  width:100%;
-  opacity:0.35;
-  background-color: gray;
-  border: 1px solid blue;
-  -webkit-box-sizing: border-box;
-  display:none;
-}
-.highlightBox{
-  position:absolute;
-  display:none;
-  top:0px;
-  height:100%;
-  width:0px;
-  background-color: green;
-  opacity:0.4;
-  border-left: 2px solid red;
-  border-right: 2px solid red;
-  border-top:none;
-  border-bottom:none;
-}
 .marker{
   position:absolute;
   border-width: 1px 0px 1px 1px;
@@ -140,8 +57,6 @@
   height:100%;
   display:none;
   float:left;
-  /*display:block(while inside), none ouside div;
-  left: VARIABLE*/
 }
 
 .resizer{
@@ -165,10 +80,7 @@
 }
 /*with dragselectJS*/
 .ds-selected {
-  /* outline: 2px solid black; */
-  /* outline-offset: 1px; */
   color: white;
-  /* font-weight: bold; */
   background-color: black;
 }
 .zoomds-selected {
@@ -190,7 +102,7 @@
   width: 0px;
   height:100%;
 }
-.subarray{
+.subArray{
   margin:10px;
   border:1px solid black;
 }
@@ -217,6 +129,8 @@ CANVAS PLAN WITH CSS GRID
 ************************************************************************/
 .board {
   display: grid;
+  /*  template: 20% for pdb viewport, rest divided equally for sobj's*/
+  /* grid-template-columns: 20% repeat(auto-fit, minmax(100px, 1fr)) auto ; */
   grid-template-columns: 20% 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-gap: 5px;
@@ -241,25 +155,33 @@ CANVAS PLAN WITH CSS GRID
   /* grid-column-start: 1;
   grid-column-end: 4; */
 }
-/* .SSE-area{
-  grid-area: SSE-area;
-} */
 .PDB_viewer{
   grid-area: PDB_viewer;
-}
-#SSE1{
-  grid-area:SSE1;
-}
-#SSE2{
-  grid-area: SSE2;
 }
 .SSE.sortable{
   padding:0px;
   /* width: 30%; */
+  display:grid;
+  grid-template-rows: 1fr 8fr 1fr;
+}
+.button-footer{
+  display:grid;
+  grid-template-columns: 8fr 1fr 1fr;
+  grid-template-areas: '. save update';
+}
+.save{
+  grid-area: save;
+}
+.update{
+  grid-area: update;
+}
+.button-footer > button {
+
 }
 .handle{
   background-color:lightgray;
   display: grid;
+  /*  CUSTOMIZE HERE FOR BUTTONS*/
   grid-template-columns: 9fr 1fr;
   grid-template-rows: 40px;
   cursor: move;
@@ -271,7 +193,7 @@ CANVAS PLAN WITH CSS GRID
     -moz-box-shadow: 0px 0px 10px #888;
     box-shadow: 0px 0px 10px #888;
 }
-.btn {
+.btn.close {
     background-color: red;
     border: none;
     color: white;
@@ -279,9 +201,25 @@ CANVAS PLAN WITH CSS GRID
     font-size: 16px;
     cursor: pointer;
 }
-.btn:hover {
+.btn.close:hover {
     background-color: DarkRed;
 }
+
 p{
   margin:10px;
+}
+.drop{
+  height:18px;
+  width: 398px;
+  border:2px dashed #0C5F8B;
+  background-color: gray;
+  float:left;
+}
+.seqPiece{
+  height:20px;
+  width: 400px;
+  font-size: 10px;
+  float:left;
+  color:white;
+  background-color: black;
 }

@@ -3,19 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JSSSE Widget</title>
+    <title>Widget</title>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- <script src="https://thibaultjanbeyer.github.io/DragSelect/ds.min.js"></script> -->
 
       <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-      <!-- <link rel="stylesheet" href="http:///resources/demos/style.css"> -->
-      <!-- <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> -->
       <link rel="stylesheet" href="widgetStyle.css">
+      <!--  style sheet for icons-->
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
       <script src="bundle.js"></script>
-      <!-- <script src = "arrDispArrTest.js"></script> -->
 
       <script src="./node_modules/dragselect/src/DragSelect.js"></script>
 
@@ -23,13 +20,29 @@
 
   </head>
   <body>
+
+  <!--  necessary to wrap input b/c each browser has native text for the button-->
   <label class="custom-file-upload" style="  border: 1px solid #ccc; display: inline-block; padding: 6px 12px; cursor: pointer;">
-    <input type="file" id="files" name="files[]" style="display:none;" multiple />
+    <input type="file" id="files"  style="display:none;" multiple />
     Select PDB File
 </label>
+<!-- DIV for navigation instructions (keyboard tips) -->
+<div>
+  <p>
+    <strong>Sequence Navigation Keys</strong>
+    <br>
+    CLICK+DRAG                select sequence
+    <br>
+    SHIFT                     zoom in on subsequence
+    <br>
+    CTRL (while click+drag)  multi-select
+    <br>
+    RIGHT-click               focus on sequence div (div will highlight blue when focused-on)
+  </p>
+</div>
   <output id="fileInfo"></output>
 
-  <!-- OUTLINE OF DRAGSELECT -->
+  <!-- OUTLINE OF DRAGSELECT Widget-->
     <!-- <div style="text-align:center;" class="widget-container">
       <div class="sequenceContainer">
         <div class="sequenceDiv" tabindex="0">
@@ -59,55 +72,38 @@
   </div> -->
 
 
-  <!-- OLD DRAGSELECT LAYOUT WITH ID's (INSTEAD OF CLASSES) -->
-  <!-- <div id="sequenceContainer">
-    <div class="sequenceDiv" id="sequenceDiv" tabindex="0">
-      <div id="marker"></div>
-      <div id="customSelector"></div>
-      <div id="locatorDiv">
-        <div id="locatorBox"></div>
-      </div>
-    </div>
-    <div id="zoomDiv">
-
-    </div>
-  </div>
-
-  <div style="text-align:center;" id="mainseqdiv">
-    <div class="sequenceSelInfoDiv" style="display:inline-block">
-      <div>
-        <strong>CURRENT SELECTION</strong>
-        <div style="text-align:center;"><button id="clearSelection" >Clear Selection</button></div>
-        <span>START </span>
-        <span id="startIndex"></span>
-        <span> : END </span>
-        <span id="endIndex"></span>
-      </div>
-      <div id="selectDisplay">
-        <div id="selectDisplayRange"></div>
-        <div id="selectDisplayDetails"></div>
-      </div>
-
-    </div>
-  </div> -->
 <!--  BOARD-->
-  <div class="board">
+  <div class="board" id = "board0">
       <div class="PDB_viewer">
         <div class = 'handle'>
           <p>PDB Viewer</p>
           <button class="btn close" ><i class="fa fa-close"></i></button>
         </div>
+        <output id="pdb_memory" style = "text-align:left"></output>
       </div>
-      <div class = "SSE sortable" id='sobj1'>
+      <div class = "SSE sortable" id='sobj0'>
         <div class = 'handle'>
           <p>SOBJ1</p>
           <button class="btn close" ><i class="fa fa-close"></i></button>
         </div>
+        <div id="sobj0 content">
+        </div>
+        <div class ="button-footer">
+          <button class="btn save" >SAVE</button>
+          <button class="btn update" >UPDATE</button>
+        </div>
       </div>
-      <div class = "SSE sortable" id='sobj2'>
+      <div class = "SSE sortable" i='sobj1'>
         <div class = 'handle'>
           <p>SOBJ2</p>
           <button class="btn close" ><i class="fa fa-close"></i></button>
+        </div>
+        <div id="sobj1 content">
+
+        </div>
+        <div class ="button-footer">
+          <button class="btn save" >SAVE</button>
+          <button class="btn update" >UPDATE</button>
         </div>
       </div>
       <div id="builder-canvas">Build Canvas</div>

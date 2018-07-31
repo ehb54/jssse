@@ -1,14 +1,24 @@
 //bring in definitions (SASMOL and JSSSE)
 var SasMol = require('../../SASMOL\ JS/sasmol.js');
+var JSSSE = require('../../jssse.js');
+
 //disable right-click on page
 window.addEventListener('contextmenu', function (e) { // Not compatible with IE < 9
     e.preventDefault();
 }, false);
+
+
+
+
 //shorthand for $(document).ready(function(){ //CODE})
 $( function() {
 
   /**************************************************************************
-    SASMOL/JSSSE CODE
+  __  __   __   __  _  _
+ (  \/  ) (  ) (  )( \( )
+  )    (  /__\  )(  )  (
+ (_/\/\_)(_)(_)(__)(_)\_)
+
     *************************************************************************/
 
     //global info file (for readPDB to access)
@@ -20,10 +30,20 @@ $( function() {
 
 
     var jssseArr = [];
-    var sobjArr = ['sobj1','sobj2'];
 
-//use Promises to wait until async operation is finished (initialize + populate windows correctly)
-//src: https://stackoverflow.com/questions/41906697/how-to-determine-that-all-the-files-have-been-read-and-resolve-a-promise/
+    var bobj = JSSSE.jssse.createBoard( 'board0', {});
+    var testSobj = JSSSE.jssse.createSobj( bobj, 'sobj0');
+    //DEMO
+    // console.log(bobj);
+    // console.log(testSobj);
+    jssseArr[0] = testSobj;
+
+
+/**
+ * use Promises to wait until async operation is finished (initialize + populate windows correctly)
+   src: https://stackoverflow.com/questions/41906697/how-to-determine-that-all-the-files-have-been-read-and-resolve-a-promise/
+ * @param  {File} file file object
+ */
 function readFile(file) {
     return new Promise(function(resolve, reject) {
         var reader = new FileReader();
@@ -34,6 +54,12 @@ function readFile(file) {
         reader.readAsText(file);
     });
 }
+
+/**
+ * use promises to wait until async operation is finished, calls helper method readFile
+ * @param  {File[]} files array of file objects (different than FileList object)
+ * @return {string[]}     array of files read (in literal text)
+ */
 function readmultifiles(files) {
     var results = [];
     files.reduce(function(p, file) {
@@ -53,24 +79,28 @@ function readmultifiles(files) {
         numPDB = results.length;
         var info = "";
         for(var i = 0; i<numPDB;i++){
+          //info contains literal text from file
           info = results[i];
-          jssseArr[i] = Object.create(SasMol.SasMol);
+          jssseArr[i].sasmol = Object.create(SasMol.SasMol);
           //store read information inside jssse objects
-          jssseArr[i].readPDB(info);
+          jssseArr[i].sasmol.readPDB(info);
 
-          numAtomsArr[i] = jssseArr[i].getAtom().length;
+          numAtomsArr[i] = jssseArr[i].sasmol.getAtom().length;
 
         }
-
         //DEMO
+        console.log(jssseArr);
         for(var i = 0; i<numPDB;i++){
-          populateWindows(sobjArr[i], jssseArr[i]);
-          initialize('start', jssseArr[i],i);
+          populateWindows(jssseArr[i].id, jssseArr[i].sasmol);
+          initialize('start', jssseArr[i].sasmol,i);
         }
         return results;
     });
 }
-
+/**
+ * main function triggered by event - calls multifiles to parse files
+ * @param  {event} e event object - use to extract files
+ */
 function handleRead(e){
   var files = e.target.files;
   var fileArr = [];
@@ -139,8 +169,8 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
 /**
  * Populates windows attached to sobj's (all HTML necessary for sequence divs, feedback box, zoom div)
- * @param  {String} sobjID [description]
- * @param {sasmol}
+ * @param  {String} sobjID [dom ID of sobj]
+ * @param {sasmol}  object sasmol object
  */
   function populateWindows(sobjID, object){
     //console.log(sobjID);
@@ -157,7 +187,7 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
       var sequenceContainer = document.createElement('div');
       sequenceContainer.classList.add('sequenceContainer');
-      sequenceContainer.style.position = 'relative';
+      //sequenceContainer.style.position = 'relative';
       var sequenceDiv = document.createElement('div');
       sequenceDiv.classList.add('sequenceDiv');
       sequenceDiv.id = 'sequenceDiv'+sobjIndex;
@@ -305,6 +335,11 @@ document.getElementById('files').addEventListener('change', handleRead, false);
       //MAKE MODULAR + ADD MORE ELEMENTS
       var sasmolInfoDiv = document.createElement('div');
 
+      /**
+       * populates Sasmol info div - refer to object definition below to know what to pass as parameter
+       * also handles display toggling (via checkbox eventlistener)
+       * @param  {sasmolInfo} param sasmol info object (definied below)
+       */
       function populateSasMolInfo(param){
         var propDiv = document.createElement('div');
         var propInfo = document.createElement('div');
@@ -332,14 +367,27 @@ document.getElementById('files').addEventListener('change', handleRead, false);
           }
         });
       }
-      var segnameObj = {
-        title: 'SEGNAME',
-        info: JSON.stringify(object.getSegname())
+      /**
+       * generic object passed as param to populateSasMolInfo
+       * @namespace
+       * @prop {string} title   title of sasmol field
+       * @prop {string} info    literal text of what to display (account for big files)
+       */
+      var sasmolInfoObj = {
+        title: '',
+        info: ''
       };
-      var betaObj = {
-        title: 'BETA',
-        info: JSON.stringify(object.getBeta())
-      };
+      var segnameObj = Object.create(sasmolInfoObj);
+      segnameObj.title = 'SEGNAME';
+      //display range (first - last)
+      segnameObj.info = object.getSegname()[0] + ' ... ' + object.getSegname()[object.getSegname().length - 1];
+
+      var betaObj = Object.create(sasmolInfoObj);
+      betaObj.title = 'BETA';
+      //display range (first - last)
+      betaObj.info = object.getBeta()[0] + ' ... ' + object.getBeta()[object.getBeta().length - 1];
+
+
       populateSasMolInfo(segnameObj);
       populateSasMolInfo(betaObj);
 
@@ -358,18 +406,28 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
 
     }
-    //populate PDB memory box
+
+    //POPULATE PDB MEMORY BOX
+    //output is just an array of strings that get converted to text displayed in HTML
     var output = [];
     //SUBJECT TO CHANGE
     //ex: chain A is hardcoded (future goal: make modular after implementing read MODEL/chain)
     output.push('<li>', 'chain A','<ul>');
-    for(var i = 0; i<numAtomsArr[sobjIndex]; i++){
-      //iterate through atoms and display in bullets
-      output.push('<li>', object.getAtom()[i], '</li>');
-    }
+
+    //uncomment below to loop through entire numAtoms (bad idea for huge pdb files)
+    // for(var i = 0; i<numAtomsArr[sobjIndex]; i++){
+    //   //iterate through atoms and display in bullets
+    //   output.push('<li>', object.getAtom()[i], '</li>');
+    // }
+    //
+    // only print first and last
+    output.push('<li>', object.getAtom()[0], '</li>');
+    output.push('<li>', '...', '</li>');
+    output.push('<li>', object.getAtom()[numAtomsArr[sobjIndex] - 1], '</li>');
     //end of ul
     output.push('</ul>','</li>');
     document.getElementById('pdb_memory').innerHTML = '<ul>' + output.join('') + '</ul>';
+
     //(Debugging purposes)
     loadBool = true;
   }
@@ -377,7 +435,7 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 //DOCUMENT EVENT LISTENERS
 //make keypress event general (only open if there exists a value to be_zoomed in on)
 document.addEventListener('keydown',function(e){
-
+  //only zoom on active elements (sequenceDiv can be focused by right-clicking)
   var activeElt = document.activeElement;
   if(e.shiftKey && seqDivFlag && (activeElt.className == 'sequenceDiv')){
     //switch on flag
@@ -390,7 +448,7 @@ document.addEventListener('keydown',function(e){
 
     zoomDivArr[sobjIndex].style.display = 'block';
     if((parseInt(locatorBoxArr[sobjIndex].innerText) < seqObjArr[sobjIndex].length)){
-
+      //grab index displayed in locatorDiv and populate zoom div
       var index = parseInt(locatorBoxArr[sobjIndex].innerText);
       populateZoomDiv(index, sobjIndex);
     }
@@ -418,18 +476,24 @@ document.addEventListener('keyup',function(e){
 });
 
 
-//initialize sequence objects inside divs
+/**
+ * initialize sequence objects inside divs (main HTML handler)
+ * @param  {string} action    denotes action to be taken (FUTURE DEVELOPMENT) - can pass 'start', possibly 'reload' in the future for responsiveness
+ * @param  {SASMOL} object    sasmol objects
+ * @param  {number} sobjIndex sobj Index
+ */
   function initialize(action, object, sobjIndex){
     var seqDiv = seqDivArr[sobjIndex];
+    //initialize seqobjarray[sobjIndex] to empty array (fill in later)
     seqObjArr[sobjIndex] = [];
     var num = numAtomsArr[sobjIndex];
+
     // Logic to make divs responsive (FOR FUTURE DEVELOPMENT - would have to re-initialize everything)
     if(action=='reload'){
       $('.sequenceDiv '+ sobjIndex).find('.res').remove();
       $('.sequenceDiv '+ sobjIndex).find('.dividers').remove();
-          //console.log('resized');
 
-          seqObjArr[sobjIndex][sobjIndex] = [];
+      seqObjArr[sobjIndex][sobjIndex] = [];
     }
 
     //update calculation
@@ -445,15 +509,27 @@ document.addEventListener('keyup',function(e){
         //placeholder unique ids (before implementing readPDB)
         newSpan.id = '_' + Math.random().toString(36).substr(2, 9);
         //MODULAR
+        /**
+         * MODULAR sequence object (as opposed to original method of embedding sasmol information inside DOM id's and using regex's to slice everywhere)
+         * @namespace
+         * @param  {SasMol} sasAtom   corresponding sasmol object
+         * @param   {string}  dom_id  corresponding DOM id
+         * @param   {boolean} zoomed  boolean flag for detecting if elt is being zoomed on (currently UNUSED)
+         * @param   {boolean} selected boolean flag for detecting if elt is selected (currently UNUSED)
+         * @param   {number}  pdbIndex  corresponding sobjIndex
+         * @param   {zoomText}  zoomText  text to display when elt is being zoomed in on (currently atom name)
+         * @param   {number}  seqObjArrIndex  index of seqObj inside parent seqObjArr
+         */
         var seqObj = {
           sasAtom: object,
           dom_id : newSpan.id,
           zoomed : false,
           selected : false,
           pdbIndex : sobjIndex,
-          zoomText : object.getName()[i],
+          zoomText : object.getName()[i] + '\n' + object.getAtom()[i],
           seqObjArrIndex: i
         };
+        //add seqobj to global seqobj array
         seqObjArr[sobjIndex][i] = seqObj;
       //newSpan.id = i;
       seqDiv.appendChild(newSpan);
@@ -462,7 +538,7 @@ document.addEventListener('keyup',function(e){
       //insert dividers
       var newDivider = document.createElement('div');
       newDivider.className = 'divider';
-      //logic for how limits on dividers
+      //logic for limits on dividers
       if(num <= 20 && i<num){
         createDivider();
       }
@@ -472,7 +548,9 @@ document.addEventListener('keyup',function(e){
       else if(i%100==0 && num <=2000 && i<num){
         createDivider();
       }
-      //nested function to create dividers
+      /**
+       * creates dividers
+       */
       function createDivider(){
         newDivider.style.left = (seqDivWidth/num)*i + 'px';
         newDivider.style.fontSize = '12px';
@@ -484,14 +562,13 @@ document.addEventListener('keyup',function(e){
     }
       //update elt width after new calculations
       eltWidth = document.querySelectorAll('.res')[0].getBoundingClientRect().width;
-      //ensure that the new elt's are added to the dragselect
-      //dsArr[sobjIndex].addSelectables(document.getElementsByClassName('res'));
 
       seqDivWidthArr[sobjIndex] = seqDivWidth;
       eltWidthArr[sobjIndex] = eltWidth;
+      //DEMO
       console.log(seqObjArr);
 
-      //initiate dragselectors
+      //instantiate dragselectors - refer to DRAGSELECTJS API for what these fields mean
         var ds = new DragSelect({
         selectables: document.getElementsByClassName('res'),
         area: seqDiv,
@@ -520,7 +597,6 @@ document.addEventListener('keyup',function(e){
 
 
         },
-        //onElementSelect: function(e){console.log(e);},
         callback: function(){
           var selection = dsArr[sobjIndex].getSelection();
           if(selection.length==0){
@@ -589,19 +665,22 @@ document.addEventListener('keyup',function(e){
           calibrateDisp(sobjIndex);
           updateSelDisplay(sobjIndex);
         }
-        //,selectables: document.getElementsByClassName('res')
       });
       //add to arrays
       dsArr[sobjIndex] = ds;
       zoomdsArr[sobjIndex] = zoomds;
 
+      //css hack (unnecessary? )
       //widgetContainerArr[sobjIndex].style.position = 'absolute';
   }
 
 
 
 /**************************************************************************
-  HELPER FUNTIONS
+_  _  ___  __    ___  ___  ___     ___  _  _  _  _  __  ____  __  __  _  _  ___
+( )( )(  _)(  )  (  ,\(  _)(  ,)   (  _)( )( )( \( )/ _)(_  _)(  )/  \( \( )/ __)
+ )__(  ) _) )(__  ) _/ ) _) )  \    ) _) )()(  )  (( (_   )(   )(( () ))  ( \__ \
+(_)(_)(___)(____)(_)  (___)(_)\_)  (_)   \__/ (_)\_)\__) (__) (__)\__/(_)\_)(___/
   *************************************************************************/
 
 /**
@@ -833,7 +912,7 @@ function getObjectByValue(arr, value) {
 
       var resZoom = document.createElement('span');
       resZoom.className = 'res';
-      resZoom.innerText = atomName + '\n' + atomNum;
+      resZoom.innerText = obj.zoomText;
       var id = obj.dom_id;
       resZoom.id = id+'_zoomed';
       resZoom.style.height = '30px';
@@ -858,6 +937,7 @@ function getObjectByValue(arr, value) {
       else if(i==hirange-1){
         mirrorItem.classList.add('zoomed-righthook');
       }
+      //FUTURE DEVELOPMENT - add some CSS for marking intermediate zoomed - elts?
       // else{
       //   mirrorItem.classList.add('zoomed-middle');
       // }

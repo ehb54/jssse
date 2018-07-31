@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include" : ["./SASMOL JS/sasmol.js","./jssse.js", "./widgetJS.js"]
+  },
+  "templates" : {
+    "theme" : "yeti",
+    "linenums" : true,
+    "outputSourceFiles": true,
+    "outputSourcePath" : true
+  }
+}

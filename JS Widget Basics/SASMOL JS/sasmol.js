@@ -1,9 +1,13 @@
+
 /**
- *  @fileOverview Class Definition and basic I/O for reading/writing PDB files
+ *  @fileoverview Class Definition and basic I/O for reading/writing PDB files
  *
  *  @requires     NPM:numjs
  *  @requires     NPM:sprintf-js
  */
+ /**
+  * @module SasMol
+  */
 //DEPENDENCIES:
 //import numJS (like numpy)
 var nj = require('numjs');
@@ -11,7 +15,33 @@ var nj = require('numjs');
 var sprintf = require("sprintf-js").sprintf,
     vsprintf = require("sprintf-js").vsprintf;
 
-
+/**
+ * SasMol Class definition
+ * @namespace
+ * @prop    {Object}    data    holder of all relevant PDB data
+ * @prop    {Number[]}  data.atom    array of atom serial numbers
+ * @prop    {Number[]}  data.index   (UNDEFINED)
+ * @prop    {Number[]}  data.original_index  (UNDEFINED)
+ * @prop    {String[]}  data.name    atom name
+ * @prop    {String[]}  data.loc     loc
+ * @prop    {String[]}  data.resname Residue name
+ * @prop    {String[]}  data.chain   Chain id
+ * @prop    {Number[]}  data.resid   residue sequence number
+ * @prop    {String[]}  data.rescode iCode
+ * @prop    {Object}    data.coor    numjs array
+ * @prop    {Object}    data.coorObj object for storing coor xyz easier (than numjs)
+ * @prop    {Number[]}  data.occupancy  occupancy
+ * @prop    {Number[]}  data.beta    temp. factor
+ * @prop    {String[]}  data.segname segment name
+ * @prop    {String[]}  data.element element name
+ * @prop    {String[]}  data.charge  charge
+ *
+ * @prop    {String[]}  data.moltype (UNDEFINED)
+ * @prop    {Object}    data.conect    (UNDEFINED)
+ * @prop    {String[]}  data.residue_flag (UNDEFINED)
+ * @prop    {String[]}  data.original_resid  (UNDEFINED)
+ * @prop    {String[]}  data.header  (UNDEFINED)
+ */
 var SasMol = {
   //initialize fields
 
@@ -45,120 +75,228 @@ var SasMol = {
 
 };
 
-//getters and setters (using 'new' JS getters and setters?)
-// Object.defineProperties(SasMol, {
-//   'getAtom': {get: function() { return this.data.atom;}},
-//   'atom': {set: function(atom) { this.data.atom = atom;}}
-// });
-//atom
+/**
+ * atom setter
+ * @param  {Number[]} atom  atom array to set
+ */
 SasMol.atom = function(atom){
   this.data.atom = atom;
 }
-
+/**
+ * atom getter
+ * @return {Number[]} atom array to get
+ */
 SasMol.getAtom = function(){
   return this.data.atom;
 }
-//index
+/**
+ * index setter
+ * @param  {Number[]} index index array to set
+ */
 SasMol.index = function(index){
   this.data.index = index;
 }
+/**
+ * index getter
+ * @return  {Number[]} index array to get
+ */
 SasMol.getIndex = function(){
   return this.data.index;
 }
-//original_index
+/**
+ * origIndex setter
+ * @param  {Number[]} index origIndex array to set
+ */
 SasMol.origIndex = function(index){
   this.data.original_index = index;
 }
+/**
+ * origIndex getter
+ * @return  {Number[]} origIndex array to get
+ */
 SasMol.getOrigIndex = function(){
   return this.data.original_index;
 }
-//name
+/**
+ * name setter
+ * @param  {String[]} name name array to set
+ */
 SasMol.name = function(name){
   this.data.name = name;
 }
+/**
+ * name getter
+ * @return  {String[]} name array to get
+ */
 SasMol.getName = function(){
   return this.data.name;
 }
-//loc
+/**
+ * loc setter
+ * @param  {String[]} loc loc array to set
+ */
 SasMol.loc = function(loc){
   this.data.loc = loc;
 }
+/**
+ * loc getter
+ * @return  {String[]} loc array to set
+ */
 SasMol.getLoc = function(){
   return this.data.loc;
 }
-//resname
+/**
+ * resname setter
+ * @param  {String[]} resname resname array to set
+ */
 SasMol.resname = function(resname){
   this.data.resname = resname;
 }
+/**
+ * resname getter
+ * @return  {String[]} resname array to get
+ */
 SasMol.getResname = function(){
   return this.data.resname;
 }
-//chain
+/**
+ * chain setter
+ * @param  {String[]} chain chain id array to set
+ */
 SasMol.chain = function(chain){
   this.data.chain = chain;
 }
+/**
+ * chain getter
+ * @return  {String[]} chain id array to get
+ */
 SasMol.getChain = function(){
   return this.data.chain;
 }
-//res seq
+/**
+ * resID setter
+ * @param  {Number[]} id res id array to set
+ */
 SasMol.resID = function(id){
   this.data.resid = id;
 }
+/**
+ * resID getter
+ * @return  {Number[]} res id array to get
+ */
 SasMol.getResID = function(){
   return this.data.resid;
 }
-//rescode
+/**
+ * rescode setter
+ * @param  {String[]} rescode rescode array to set
+ */
 SasMol.rescode = function(rescode){
   this.data.rescode = rescode;
 }
+/**
+ * rescode getter
+ * @return  {String[]} rescode rescode array to get
+ */
 SasMol.getRescode = function(){
   return this.data.rescode;
 }
-//coor
+/**
+ * coor setter
+ * @param  {Object} coor coor array to set
+ */
 SasMol.coor = function(coor){
   this.data.coor = coor;
 }
+/**
+ * coor getter
+ * @return  {Object} coor array to get
+ */
 SasMol.getCoor = function(){
   return this.data.coor;
 }
+/**
+ * coorObj setter
+ * @param  {Object} coorObj coorObj array to set
+ */
 SasMol.coorObj = function(coor){
   this.data.coorObj = coor;
 }
+/**
+ * coorObj getter
+ * @return  {Object} coorObj array to get
+ */
 SasMol.getCoorObj = function(){
   return this.data.coorObj;
 }
-//occupancy
+/**
+ * occupancy setter
+ * @param  {Number[]} occupancy occupancy array to set
+ */
 SasMol.occupancy = function(occ){
   this.data.occupancy = occ;
 }
+/**
+ * occupancy getter
+ * @return  {Number[]} occupancy array to get
+ */
 SasMol.getOccupancy = function(){
   return this.data.occupancy;
 }
-//beta
+/**
+ * beta setter
+ * @param  {Number[]} beta beta array to set
+ */
 SasMol.beta = function(beta){
   this.data.beta = beta;
 }
+/**
+ * beta getter
+ * @return  {Number[]} beta beta array to get
+ */
 SasMol.getBeta = function(){
   return this.data.beta;
 }
-//elt symbol
+/**
+ * elt setter
+ * @param  {String[]} elt elt array to set
+ */
 SasMol.elt = function(elt){
   this.data.element = elt;
 }
+/**
+ * elt getter
+ * @return  {String[]} elt array to get
+ */
 SasMol.getElt = function(){
   return this.data.element;
 }
-//charge
+/**
+ * charge setter
+ * @param  {String[]} charge charge array to set
+ */
 SasMol.charge = function(charge){
   this.data.charge = charge;
 }
+/**
+ * charge getter
+ * @return  {String[]} charge array to get
+ */
 SasMol.getCharge = function(){
   return this.data.charge;
 }
+/**
+ * segname setter
+ * @param  {String[]} segname segname array to set
+ */
 //segname
 SasMol.segname = function(segname){
   this.data.segname = segname;
 }
+/**
+ * segname getter
+ * @return  {String[]} segname array to get
+ */
 SasMol.getSegname = function(){
   return this.data.segname;
 }

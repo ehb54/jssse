@@ -1,0 +1,5 @@
+{
+  "source": {
+    "include" : ["./module1.js", "testjsdoc.js"]
+  }
+}
