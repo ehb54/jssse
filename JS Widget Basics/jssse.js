@@ -89,7 +89,7 @@ jssse.createBoard = function( id, options) {
  */
 jssse.remove = function( bobj ){
   //standard practice for 'removing'?
-  bobj = {};
+  bobj = null
 }
 /**
  * undoes operations in the undo/redo stack
@@ -239,7 +239,7 @@ jssse.load = function( sobj, data, loadOptions, cb){
     sobj.data = data;
   }
   //execute cb when load finishes
-  cb;
+  cb();
 }
 /**
  * returns the data (possibly edited by the user) in various formats
@@ -250,6 +250,7 @@ jssse.load = function( sobj, data, loadOptions, cb){
  */
 jssse.out = function( sobj, outOptions ){
   var data = sobj.data;
+  //UNDER DEVELOPMENT
   //LOGIC TO MODIFY DATA WITH OUTOPTIONS
 
 
@@ -263,6 +264,7 @@ jssse.out = function( sobj, outOptions ){
  */
 jssse.build = function( sobj1, sobj2 ){
   var sobj;
+  //UNDER DEVELOPMENT
   //BUILD - what does it mean to build? combine arrays? what properties should be merged?
 
 

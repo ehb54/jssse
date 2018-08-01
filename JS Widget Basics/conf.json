@@ -3,9 +3,12 @@
     "include" : ["./SASMOL JS/sasmol.js","./jssse.js", "./widgetJS.js"]
   },
   "templates" : {
+    "systemName" : "JSSSE Documentation",
     "theme" : "yeti",
     "linenums" : true,
     "outputSourceFiles": true,
-    "outputSourcePath" : true
+    "outputSourcePath" : true,
+    "sort" : false,
+    "dateFormat" : "MMMM Do YYYY, h:mm:ss a"
   }
 }

@@ -1,0 +1,144 @@
+.
+├── docs
+│   ├── -_anonymous_-initialize-seqObj.html
+│   ├── -_anonymous_-populateWindows-sasmolInfoObj.html
+│   ├── bobj.html
+│   ├── global.html
+│   ├── img
+│   │   ├── glyphicons-halflings.png
+│   │   └── glyphicons-halflings-white.png
+│   ├── index.html
+│   ├── jssse.html
+│   ├── jssse.js.html
+│   ├── module-JSSSE-bobj.html
+│   ├── module-JSSSE.html
+│   ├── module-JSSSE-jssse.html
+│   ├── module-JSSSE-sobj.html
+│   ├── module-SasMol.html
+│   ├── module-SasMol-SasMol.html
+│   ├── modules.list.html
+│   ├── namespaces.list.html
+│   ├── quicksearch.html
+│   ├── SASMOL JS_sasmol.js.html
+│   ├── scripts
+│   │   ├── docstrap.lib.js
+│   │   ├── fulltext-search.js
+│   │   ├── fulltext-search-ui.js
+│   │   ├── linenumber.js
+│   │   ├── lunr.min.js
+│   │   ├── prettify
+│   │   │   ├── Apache-License-2.0.txt
+│   │   │   ├── jquery.min.js
+│   │   │   ├── lang-css.js
+│   │   │   └── prettify.js
+│   │   ├── sunlight.js
+│   │   └── toc.js
+│   ├── sobj.html
+│   └── widgetJS.js.html
+├── images
+│   ├── bug1_IncorrectSplitSelection.png
+│   └── joseph_notes1.jpg
+├── JS Widget Basics
+│   ├── bundle.js
+│   ├── conf.json
+│   ├── docIndex.md
+│   ├── Drafts&Subprojects
+│   │   ├── arrDispArrTest.js
+│   │   ├── bundle.js
+│   │   ├── index.html
+│   │   ├── javascript.js
+│   │   ├── oldCSS.css
+│   │   ├── oldDragSelect.js
+│   │   ├── oldIndex.html
+│   │   ├── Sequence Object Redesign
+│   │   │   ├── bundle
+│   │   │   ├── bundle.js
+│   │   │   ├── index.html
+│   │   │   ├── javascript.js
+│   │   │   └── style.css
+│   │   ├── Sequence Selector Draft 1
+│   │   │   ├── index_draft1.html
+│   │   │   ├── javascript_draft1.js
+│   │   │   └── style_draft1.css
+│   │   ├── style.css
+│   │   └── workingDemo.js
+│   ├── DragSelect.js
+│   ├── High Level Tests
+│   │   ├── canvasPlanCSS.css
+│   │   ├── canvasPlan.html
+│   │   ├── canvasPlanJS.js
+│   │   ├── conf.json
+│   │   ├── module1.js
+│   │   ├── testDrag2.js
+│   │   ├── testDragCSS.css
+│   │   ├── testDrag.html
+│   │   ├── testDragJS.js
+│   │   ├── testFileMultiRead.js
+│   │   ├── testFileReadIndex.html
+│   │   ├── testjsdoc.js
+│   │   └── testOut
+│   │       ├── global.html
+│   │       ├── index.html
+│   │       ├── module1.js.html
+│   │       ├── module-A.html
+│   │       ├── module-Obj.html
+│   │       ├── module-Person.html
+│   │       ├── module-Person-Person.html
+│   │       ├── module-testJSDOC.html
+│   │       ├── scripts
+│   │       │   ├── linenumber.js
+│   │       │   └── prettify
+│   │       │       ├── Apache-License-2.0.txt
+│   │       │       ├── lang-css.js
+│   │       │       └── prettify.js
+│   │       └── testjsdoc.js.html
+│   ├── jspdb.js
+│   ├── jssse.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── readFiles.js
+│   ├── SASMOL JS
+│   │   ├── 1AA-NoEND.pdb
+│   │   ├── 1bdg.pdb
+│   │   ├── 4ibc.pdb
+│   │   ├── 6djx.pdb
+│   │   ├── drafts
+│   │   │   ├── bundle.js
+│   │   │   ├── index.html
+│   │   │   ├── sasioDraft2.js
+│   │   │   ├── sasioDraft.js
+│   │   │   ├── sasmolDraft.js
+│   │   │   └── scripts
+│   │   │       ├── main.js
+│   │   │       ├── objects.js
+│   │   │       ├── require.js
+│   │   │       └── testRequire1.js
+│   │   ├── numjs
+│   │   ├── numjstest.js
+│   │   ├── pdbDebug.pdb
+│   │   ├── res.pdb
+│   │   ├── sasIndex.html
+│   │   ├── sasio.js
+│   │   ├── sasmol-bundle.js
+│   │   ├── sasmol.js
+│   │   ├── sasmol.py
+│   │   ├── sasmol.pyc
+│   │   ├── sprintfTest.js
+│   │   ├── system.py
+│   │   └── test.py
+│   ├── server.js
+│   ├── test.txt
+│   ├── widget.html
+│   ├── widgetJS.js
+│   └── widgetStyle.css
+├── README.md
+├── SASMOL JS
+│   ├── sasIndex.html
+│   ├── sasio.js
+│   ├── sasmol-bundle.js
+│   └── sasmol.js
+├── testing
+│   └── events.js
+└── tree.txt
+
+18 directories, 123 files

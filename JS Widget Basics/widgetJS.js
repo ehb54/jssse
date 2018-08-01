@@ -150,7 +150,7 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
 
     /*
-  ____  ____  _  _  ____  __     __  ____  ____  ____     ___  __  ____  ____
+ ____  ____  _  _  ____  __     __  ____  ____  ____     ___  __  ____  ____
 (    \(  __)/ )( \(  __)(  )   /  \(  _ \(  __)(  _ \   / __)/  \(    \(  __)
  ) D ( ) _) \ \/ / ) _) / (_/\(  O )) __/ ) _)  )   /  ( (__(  O )) D ( ) _)
 (____/(____) \__/ (____)\____/ \__/(__)  (____)(__\_)   \___)\__/(____/(____)
@@ -226,6 +226,13 @@ document.getElementById('files').addEventListener('change', handleRead, false);
       sequenceDiv.classList.add('sequenceDiv');
       sequenceDiv.id = 'sequenceDiv'+sobjIndex;
       sequenceDiv.tabIndex = '0';
+
+      var sequenceDivHeader = document.createElement('p');
+      sequenceDivHeader.style.margin = '5px';
+      sequenceDivHeader.style.fontSize = '12px';
+      var headerText = document.createTextNode('SEQUENCE SELECTION BOX:');
+      sequenceDivHeader.appendChild(headerText);
+
       var marker = document.createElement('div');
       marker.classList.add('marker');
       var customSelector = document.createElement('div');
@@ -291,11 +298,12 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
 
       widgetContainer.appendChild(sequenceSelInfoDiv);
+      widgetContainer.appendChild(sequenceDivHeader);
       widgetContainer.appendChild(sequenceContainer);
       //append to sobj (top-level HTML elt)
       sobjContent.appendChild(widgetContainer);
 
-      //add event listeners
+      //EVENT LISTENERS
       //add clear selection functionality
       clearSelBtn.addEventListener('click',function(e){
         clearAllSelection(sobjIndex);
@@ -304,6 +312,7 @@ document.getElementById('files').addEventListener('change', handleRead, false);
       sequenceDiv.addEventListener('mousemove', function(e){
         seqDivFlag = true;
         var seqDivPosition = getPosition(sequenceDiv);
+        //debugging
         //console.log('mousein '+ (e.pageX - seqDivPosition.x));
         marker.style.display = 'block';
         marker.style.left = (e.pageX - seqDivPosition.x)+'px';
@@ -333,7 +342,9 @@ document.getElementById('files').addEventListener('change', handleRead, false);
         //clear seqPieces first
         $('#seqPiece'+sobjIndex).remove();
         $('#drop'+sobjIndex).remove();
-        console.log(JSON.stringify(arrDisp));
+
+        //DEMO
+        // console.log(JSON.stringify(arrDisp));
         var seqPiece = document.createElement('div');
         seqPiece.classList.add('seqPiece');
         seqPiece.id = 'seqPiece'+sobjIndex;
@@ -368,7 +379,8 @@ document.getElementById('files').addEventListener('change', handleRead, false);
 
       //MAKE MODULAR + ADD MORE ELEMENTS
       var sasmolInfoDiv = document.createElement('div');
-
+      sasmolInfoDiv.style.position = 'absolute';
+      sasmolInfoDiv.style.top = '430px';  //MAKE RESPONSIVE/DYNAMIC
       /**
        * populates Sasmol info div - refer to object definition below to know what to pass as parameter
        * also handles display toggling (via checkbox eventlistener)
@@ -708,7 +720,7 @@ document.addEventListener('keyup',function(e){
       zoomdsArr[sobjIndex] = zoomds;
 
       //css hack (unnecessary? )
-      //widgetContainerArr[sobjIndex].style.position = 'absolute';
+      widgetContainerArr[sobjIndex].style.position = 'absolute';
   }
 
 
