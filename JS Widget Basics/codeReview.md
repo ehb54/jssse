@@ -295,7 +295,9 @@ Assuming the current state of the code will be built on:
    - Clean up jQuery 'droppable' functionality when 'update' is clicked (in WidgetJS populateWindows( ... ) method)
 - Move towards integrating the CSS properties with the dynamic HTML generation done in JS. Major edits to the hard-coded geometric properties can clobber a lot of the functionality if done carelessly. (Traditional web dev as I've learned from scouring the web does include some sort of work with CSS but I now realize that our scientific application requires as much dynamic processing as possible so it should be JS>CSS>HTML)
 - Introduce more buttons (ex: 'minimize', 'maximize', 'modify field', and decide on functionality
-  - Buttons placement is done best using CSS-grid, update grid-template-columns as necessary (ex: 9:1 ratio for content:close_btn or 8:1:1 content:minimize_btn:close_btn)
+   - Buttons placement is done best using CSS-grid, update grid-template-columns as necessary (ex: 9:1 ratio for content:close_btn or 8:1:1 content:minimize_btn:close_btn)
+- Implement command line interface
+   - Can be as simple as text input box grouped with button for submission?
 - Heads up - I added some logic to DragSelectJS with detecting the parent HTML element to determine which classes should be added/removed to the selected/unselected elements. CTRL-F ('ds-selected' and 'zoomds-selected')
 - Implement overlapping selection - either redesign the whole 'DragSelect' or dig into the source code (it's well documented)
 - Ensure that major browsers are supported - Firefox, Chrome, Safari . Main things to look out for - HTML disable text select, etc
