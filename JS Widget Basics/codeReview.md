@@ -30,7 +30,7 @@ tree -I 'bower_components|node_modules|fonts|styles' > tree.txt
 
 #### yes, even hidden code blocks!
 
-```python
+```
 print("hello world!")
 ```
 
