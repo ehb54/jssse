@@ -1,6 +1,6 @@
 ## CODE REVIEW:
-*I couldn't find a way to attach a MD file in addition to the one used to generate the index.html so I've
-included the Code Review section here (can relocate in the future). I highly recommend going through this guide/rant(?!) thoroughly but a [TL;DR](#directions-forwardtldr) section is also available. Minimum understanding: HTML structure of widget, DragSelectJS API, widgetJS API (helper methods all in Global namespace tab)*
+*I couldn't find a way for JSDoc to include another html/MD page so I've
+linked the Code Review section from the official MD home page (can relocate in the future). I highly recommend going through this guide/rant(?!) thoroughly but a [TL;DR](#directions-forwardtldr) section is also available. Minimum understanding: HTML structure of widget, DragSelectJS API, widgetJS API (helper methods all in Global namespace tab)*
 
 **legend:**
 
