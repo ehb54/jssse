@@ -309,10 +309,10 @@ Assuming the current state of the code will be built on:
          - don't end lines with semicolons, separate by indenting
          - code like you speak and it will probably work...
          - numpy is magic
-   - Networking
-      - Basic https requests + TCP/IP protocol
-      - why AJAX and anything async matters (running other code before callbacks execute) + a little about Promises.
-      - Next step for me: understand OSI model front-to-back (useful in embedded applications), tinker with wireshark and network stuff on Pi
+      - Networking
+         - Basic https requests + TCP/IP protocol
+         - why AJAX and anything async matters (running other code before callbacks execute) + a little about Promises.
+         - Next step for me: understand OSI model front-to-back (useful in embedded applications), tinker with wireshark and network stuff on Pi
    - General behavior in professional environment
       - Ask when questions arise immediately, ask for clarification if needed ASAP. Most of the time, I struggle with not knowing what I don't understand so I sometimes blindly approach a problem and code myself into a corner. Leading to...
       - Gather thoughts before tackling a problem. Consider making a high-level list of things to accomplish
