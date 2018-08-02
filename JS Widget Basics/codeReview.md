@@ -223,6 +223,8 @@ The 3 main JS files listed above should be well documented with JSDoc/Bootstrap.
 ```
 jsdoc -c ./conf.json -d ../docs -R ./docIndex.md -t ./node_modules/ink-docstrap/template
 ```
+-c requires path to config file; -d accepts path to output; -t requires path to npm module folder for templates.
+
 In final implementation, **_consider moving ink-doctrap/template folder for reorganization_**
 
 1. **SasMol** - I've tried my best to emulate the style in the Python counterpart.
@@ -256,6 +258,11 @@ In final implementation, **_consider moving ink-doctrap/template folder for reor
       - populateZoomDiv( ... ) does what the name implies. **_It should be made more modular if the user wants to increase the range allowed by the zoom. Consider adding a simple dropdown with values 5, 10, 15._**
       - getIndexByWidth( ... ) does some very rudimentary geometric calculations and populates the value inside the locatorBox. **_Consider fine-tuning this logic. For average-sized pdb's ranging in the thousands, there may not be any better way to track mouse hovering over the seqObj's than a simple geometric calculation_**.
       - other methods such as updateSelDisplay, updateCurrSelection, calibrateDisp, clearAllSelection concern the sequence Feedback box. Key functionalities include splitting selection into coherent and contiguous subarrays. (ex: selection may look like this [1, 2, 3, 5, 6, 8, 10] which should logically look like this: [1-3, 5-8, 10])
+
+Run browserify to wrap all of the npm modules to use in the browser if it can't be done manually.
+```
+browserify widgetJS.js > bundle.js
+```
 
 **KNOWN BUGS + POSSIBLE IDEAS FOR SOLUTIONS + TEMPORARY WORKAROUNDS**
 1. selecting in the primary sequence div for average pdb's incorrectly splits selection array into a single element + array. Refer to  [picture](https://github.com/ehb54/jssse/tree/master/images/bug1_IncorrectSplitSelection.png)
