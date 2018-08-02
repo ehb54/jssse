@@ -14,3 +14,6 @@ Issues/projects in this repo will be HQ for to do items
 * [Create an issue](https://github.com/ehb54/jssse/issues/new)
 * [API v0.2](https://github.com/ehb54/jssse/wiki/API-notes-0.2)
 * [Code Review](https://github.com/ehb54/jssse/blob/master/JS%20Widget%20Basics/codeReview.md)
+* [Google Drive for report + poster related documents](https://drive.google.com/open?id=1JuxQEw_F087Zpd1nVLIAFPk0r-Egp0k6UiaMHVt5Utw)
+   * [JSSSE Poster](https://docs.google.com/presentation/d/1D5H72o-ZnQ9oWeAHmc_WpzBMF3xROLR2lum2U8ML8aE/edit?usp=sharing)
+   * [SGCI Report](https://docs.google.com/document/d/1qpypH0D8KUUxT5iMTNfynW_3RzGslGtLWiI5MLRRhrY/edit?usp=sharing)
