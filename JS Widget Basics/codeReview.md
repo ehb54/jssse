@@ -39,6 +39,7 @@ print("hello world!")
 
 <details><summary>Collapsible Tree</summary>
 <p>
+
 ```
 .
 ├── docs
@@ -185,6 +186,7 @@ print("hello world!")
 
 18 directories, 123 files
 ```
+
 </p>
 </details>
 
