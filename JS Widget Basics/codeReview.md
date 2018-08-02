@@ -285,7 +285,7 @@ browserify widgetJS.js > bundle.js
 ##### **DIRECTIONS FORWARD/TL;DR**
 (written like instructions to myself on how I would do it if I had more time, so take no offense if the language seems blunt)
 Assuming the current state of the code will be built on:
-- Make sure CSS Grid works at a High level + generating HTML for sub-windows (probably use JS .gridTemplateAreas = 'blah')
+- Make sure CSS Grid works/is-responsive at a High level + generating HTML for sub-windows (probably use JS .gridTemplateAreas = 'blah')
   - The widgetJS part for rearranging the subwindows is marked, try disabling/commenting out the jQuery '.sortable()' before handling the CSS grid stuff.
 - Be careful when bringing scripts together in the HTML file (browserify). Variables in an early defined script cannot be called inside the document.ready() (or $(function({ }))) code block of any subsequent script - _I've tried this but I may be wrong_. Unfortunately, the document.ready()/$(function({})) is almost always required if there is existing HTML. Even if there just ends up being a button for reading in PDB, you still need to wait until the document is ready to attach the event listener to actually start reading the PDB _(or dynamically generate starting button?)._
 - Figure out a reliable way for keeping track of sobj's and stick with it - whether it be sobjIndex or in the parent bobj.
@@ -296,7 +296,7 @@ Assuming the current state of the code will be built on:
 - Move towards integrating the CSS properties with the dynamic HTML generation done in JS. Major edits to the hard-coded geometric properties can clobber a lot of the functionality if done carelessly. (Traditional web dev as I've learned from scouring the web does include some sort of work with CSS but I now realize that our scientific application requires as much dynamic processing as possible so it should be JS>CSS>HTML)
 - Introduce more buttons and decide on functionality
 - Heads up - I added some logic to DragSelectJS with detecting the parent HTML element to determine which classes should be added/removed to the selected/unselected elements. CTRL-F ('ds-selected' and 'zoomds-selected')
-
+- Ensure that major browsers are supported - Firefox, Chrome, Safari . Main things to look out for - HTML disable text select, etc
 
 ##### **AFTERTHOUGHTS**
 - Hopefully this guide was a bit helpful for understanding the thought process of my code. Most of this seems like rambling from a quick glance but words are the easiest way for me explain since there are some nuances that can't quite be explained simply by looking at the raw code. I wish I had more expertise to go further into the project - turns out the Drag Select functionality was not as easy as I had anticipated and took up most of my time xD
