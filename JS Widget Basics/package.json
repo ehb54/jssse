@@ -14,6 +14,7 @@
     "browserify-fs": "^1.0.0",
     "ink-docstrap": "^1.3.2",
     "jquery-ui": "^1.12.1",
+    "jsdoc": "^3.5.5",
     "nodemon": "^1.17.5",
     "numjs": "^0.16.0",
     "readline-browserify": "0.0.4",

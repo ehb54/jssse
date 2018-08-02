@@ -1,5 +1,5 @@
 //running jsdoc command in terminal:
-// jsdoc -c ./conf.json -d ../docs -R ../README.md -t ./node_modules/ink-docstrap/template
+// jsdoc -c ./conf.json -d ../docs -R ./docIndex.md -t ./node_modules/ink-docstrap/template
 /**
  * @fileoverview Manages html display of widget and corresponding functionalities
  * @requires  JSSSE
