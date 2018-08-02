@@ -289,13 +289,15 @@ Assuming the current state of the code will be built on:
   - The widgetJS part for rearranging the subwindows is marked, try disabling/commenting out the jQuery '.sortable()' before handling the CSS grid stuff.
 - Be careful when bringing scripts together in the HTML file (browserify). Variables in an early defined script cannot be called inside the document.ready() (or $(function({ }))) code block of any subsequent script - _I've tried this but I may be wrong_. Unfortunately, the document.ready()/$(function({})) is almost always required if there is existing HTML. Even if there just ends up being a button for reading in PDB, you still need to wait until the document is ready to attach the event listener to actually start reading the PDB _(or dynamically generate starting button?)._
 - Figure out a reliable way for keeping track of sobj's and stick with it - whether it be sobjIndex or in the parent bobj.
-- Add ReadPDB functionality for parsing CHAIN/MODEL information for below step:
+- Add ReadPDB functionality for parsing CHAIN/MODEL information for below step
 - Agree on what to display for the toggle-able information divs and the pdb memory - consider looking at how Chrome Dev Tools displays large arrays as an example.
 - Decide how to represent the assembly of sobjs. Literal mashing of arrays in properties?
    - Clean up jQuery 'droppable' functionality when 'update' is clicked (in WidgetJS populateWindows( ... ) method)
 - Move towards integrating the CSS properties with the dynamic HTML generation done in JS. Major edits to the hard-coded geometric properties can clobber a lot of the functionality if done carelessly. (Traditional web dev as I've learned from scouring the web does include some sort of work with CSS but I now realize that our scientific application requires as much dynamic processing as possible so it should be JS>CSS>HTML)
-- Introduce more buttons and decide on functionality
+- Introduce more buttons (ex: 'minimize', 'maximize', 'modify field', and decide on functionality
+  - Buttons placement is done best using CSS-grid, update grid-template-columns as necessary (ex: 9:1 ratio for content:close_btn or 8:1:1 content:minimize_btn:close_btn)
 - Heads up - I added some logic to DragSelectJS with detecting the parent HTML element to determine which classes should be added/removed to the selected/unselected elements. CTRL-F ('ds-selected' and 'zoomds-selected')
+- Implement overlapping selection - either redesign the whole 'DragSelect' or dig into the source code (it's well documented)
 - Ensure that major browsers are supported - Firefox, Chrome, Safari . Main things to look out for - HTML disable text select, etc
 
 ##### **AFTERTHOUGHTS**
