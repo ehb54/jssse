@@ -287,6 +287,7 @@ Assuming the current state of the code will be built on:
    - Clean up jQuery 'droppable' functionality when 'update' is clicked (in WidgetJS populateWindows( ... ) method)
 - Move towards integrating the CSS properties with the dynamic HTML generation done in JS. Major edits to the hard-coded geometric properties can clobber a lot of the functionality if done carelessly. (Traditional web dev as I've learned from scouring the web does include some sort of work with CSS but I now realize that our scientific application requires as much dynamic processing as possible so it should be JS>CSS>HTML)
 - Introduce more buttons and decide on functionality
+- Heads up - I added some logic to DragSelectJS with detecting the parent HTML element to determine which classes should be added/removed to the selected/unselected elements. CTRL-F ('ds-selected' and 'zoomds-selected')
 
 
 ##### **AFTERTHOUGHTS**
