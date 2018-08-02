@@ -286,6 +286,7 @@ browserify widgetJS.js > bundle.js
 (written like instructions to myself on how I would do it if I had more time, so take no offense if the language seems blunt)
 Assuming the current state of the code will be built on:
 - Make sure CSS Grid works at a High level + generating HTML for sub-windows (probably use JS .gridTemplateAreas = 'blah')
+  - The widgetJS part for rearranging the subwindows is marked, try disabling/commenting out the jQuery '.sortable()' before handling the CSS grid stuff.
 - Be careful when bringing scripts together in the HTML file (browserify). Variables in an early defined script cannot be called inside the document.ready() (or $(function({ }))) code block of any subsequent script - _I've tried this but I may be wrong_. Unfortunately, the document.ready()/$(function({})) is almost always required if there is existing HTML. Even if there just ends up being a button for reading in PDB, you still need to wait until the document is ready to attach the event listener to actually start reading the PDB _(or dynamically generate starting button?)._
 - Figure out a reliable way for keeping track of sobj's and stick with it - whether it be sobjIndex or in the parent bobj.
 - Add ReadPDB functionality for parsing CHAIN/MODEL information for below step:
